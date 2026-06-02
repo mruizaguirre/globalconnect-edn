@@ -165,16 +165,22 @@ function parseResumenTotal(wb) {
       continue;
     }
 
-    // Carreras: col G (idx 6) = nombre, H=total, I=1curso, J=2cursos, K=pct
-    // Leer todas las filas con dato en G que no sean encabezados
-    if (cells[6] && cells[6].length > 3
-        && !/^(carrera|alumnos unicos|inscripciones|curso)/i.test(cells[6])
-        && isNaN(parseFloat(cells[6]))) {
-      const total = parseInt(cells[7])  || 0;
-      const one   = parseInt(cells[8])  || 0;
-      const two   = parseInt(cells[9])  || 0;
-      const pct   = parseFloat(cells[10]) || 0;
-      if (total > 0) carreras.push({carrera:cells[6].trim(), total, one, two, pct});
+  }
+
+  // Carreras: segunda pasada desde la fila "Carrera" en col G
+  let carreraHeaderRow = -1;
+  for (let i=0; i<rows.length; i++) {
+    if (String(rows[i][6]??'').trim().toLowerCase() === 'carrera') { carreraHeaderRow=i; break; }
+  }
+  if (carreraHeaderRow >= 0) {
+    for (let i=carreraHeaderRow+1; i<rows.length; i++) {
+      const r=rows[i];
+      const nombre=String(r[6]??'').trim();
+      const total=parseInt(r[7])||0;
+      const one=parseInt(r[8])||0;
+      const two=parseInt(r[9])||0;
+      const pct=parseFloat(r[10])||0;
+      if (nombre && total>0) carreras.push({carrera:nombre, total, one, two, pct});
     }
   }
 
