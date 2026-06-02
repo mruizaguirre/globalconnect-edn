@@ -1,9 +1,9 @@
 {
   "resumen": {
-    "alumnosUnicos": 183,
-    "unCurso": 54,
-    "dosCursos": 129,
-    "totalGeneral": 314,
+    "alumnosUnicos": 185,
+    "unCurso": 55,
+    "dosCursos": 131,
+    "totalGeneral": 318,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -11,11 +11,11 @@
       },
       {
         "nombre": "Impact Investing",
-        "n": 29
+        "n": 30
       },
       {
         "nombre": "Geopolítica y Estrategia",
-        "n": 18
+        "n": 19
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
@@ -25,11 +25,11 @@
     "cursosB": [
       {
         "nombre": "Reestructuración Financiera",
-        "n": 32
+        "n": 33
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 27
+        "n": 28
       },
       {
         "nombre": "Neurociencias y Liderazgo",
@@ -57,17 +57,17 @@
       },
       {
         "carrera": "Maestría en Negocios Tecnológicos",
-        "total": 19,
+        "total": 20,
         "one": 1,
         "two": 19,
-        "pct": 1
+        "pct": 0.95
       },
       {
         "carrera": "Maestría en Finanzas",
-        "total": 16,
+        "total": 17,
         "one": 3,
-        "two": 13,
-        "pct": 0.8125
+        "two": 14,
+        "pct": 0.8235294117647058
       },
       {
         "carrera": "Maestria en Finanzas (Modalidad a distancia)",
@@ -84,18 +84,18 @@
         "pct": 0.5
       },
       {
+        "carrera": "Graduado",
+        "total": 10,
+        "one": 6,
+        "two": 4,
+        "pct": 0.4
+      },
+      {
         "carrera": "Maestría en Marketing y Comunicación",
         "total": 10,
         "one": 5,
         "two": 5,
         "pct": 0.5
-      },
-      {
-        "carrera": "Graduado",
-        "total": 9,
-        "one": 6,
-        "two": 3,
-        "pct": 0.3333333333333333
       },
       {
         "carrera": "Maestría en Administración de Negocios de Salud",
@@ -756,6 +756,12 @@
           "carrera": "Maestría en Administración de Negocios de Salud"
         },
         {
+          "apellido": "Tantucci",
+          "nombre": "German Ezequiel",
+          "email": "gtantucci@gmail.com",
+          "carrera": "Graduado"
+        },
+        {
           "apellido": "Tovar Roa",
           "nombre": "Christy Lacey",
           "email": "ltovarroa@udesa.edu.ar",
@@ -892,6 +898,12 @@
           "nombre": "Ezequiel Nicolas",
           "email": "etrivelli@udesa.edu.ar",
           "carrera": "Maestria en Finanzas (Modalidad a distancia)"
+        },
+        {
+          "apellido": "Vargas Ochuza",
+          "nombre": "Simon Ulises",
+          "email": "svargasochuza@udesa.edu.ar",
+          "carrera": "Maestría en Finanzas"
         }
       ]
     },
@@ -1480,6 +1492,12 @@
           "nombre": "Camila",
           "email": "csoria@udesa.edu.ar",
           "carrera": "Maestría en Negocios Tecnológicos"
+        },
+        {
+          "apellido": "Tantucci",
+          "nombre": "German Ezequiel",
+          "email": "gtantucci@gmail.com",
+          "carrera": "Graduado"
         },
         {
           "apellido": "Vazquez",
@@ -2088,6 +2106,12 @@
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
+          "apellido": "Vargas Ochuza",
+          "nombre": "Simon Ulises",
+          "email": "svargasochuza@udesa.edu.ar",
+          "carrera": "Maestría en Finanzas"
+        },
+        {
           "apellido": "Zigaran Costa",
           "nombre": "Gonzalo",
           "email": "gzigarancosta@udesa.edu.ar",
@@ -2096,5 +2120,5 @@
       ]
     }
   },
-  "fecha": "1 de junio de 2026"
+  "fecha": "2 de junio de 2026"
 }
