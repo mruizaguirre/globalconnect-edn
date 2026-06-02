@@ -1,8 +1,8 @@
 {
   "resumen": {
-    "alumnosUnicos": 0,
-    "unCurso": 2,
-    "dosCursos": 0,
+    "alumnosUnicos": 183,
+    "unCurso": 54,
+    "dosCursos": 129,
     "totalGeneral": 314,
     "cursosA": [
       {
