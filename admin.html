@@ -165,14 +165,16 @@ function parseResumenTotal(wb) {
       continue;
     }
 
-    // Carreras: col G (idx 6) = nombre carrera
-    if (cells[6] && /maestr[íi]|master|graduado|externo|doctorado/i.test(cells[6])
-        && !/carrera/i.test(cells[6])) {
+    // Carreras: col G (idx 6) = nombre, H=total, I=1curso, J=2cursos, K=pct
+    // Leer todas las filas con dato en G que no sean encabezados
+    if (cells[6] && cells[6].length > 3
+        && !/^(carrera|alumnos unicos|inscripciones|curso)/i.test(cells[6])
+        && isNaN(parseFloat(cells[6]))) {
       const total = parseInt(cells[7])  || 0;
       const one   = parseInt(cells[8])  || 0;
       const two   = parseInt(cells[9])  || 0;
       const pct   = parseFloat(cells[10]) || 0;
-      if (total>0) carreras.push({carrera:cells[6].trim(), total, one, two, pct});
+      if (total > 0) carreras.push({carrera:cells[6].trim(), total, one, two, pct});
     }
   }
 
