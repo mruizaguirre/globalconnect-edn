@@ -111,6 +111,13 @@ function handleFile(file) {
 }
 
 // ── PARSER RESUMEN TOTAL ──────────────────────────────────
+// Estructura exacta del Excel:
+// Fila 3 (idx 2): cols G,H,I = "Alumnos Unicos", "1 Curso", "2 Cursos"  (idx 6,7,8)
+// Fila 4 (idx 3): cols G,H,I = 183, 54, 129
+// Fila 4 col B (idx 1) = "Módulo A"
+// Filas 5-8: col B=número, col C=nombre curso, col D=n inscriptos
+// Fila 18: col C="TOTAL GENERAL", col D=314
+// Filas 10+: col G=carrera, H=total, I=1curso, J=2cursos, K=pct
 function parseResumenTotal(wb) {
   const sn = wb.SheetNames.find(n => n.toLowerCase().includes('resumen total'));
   if (!sn) throw new Error('No encontré la pestaña "Resumen Total"');
@@ -118,66 +125,62 @@ function parseResumenTotal(wb) {
 
   let alumnosUnicos=0, unCurso=0, dosCursos=0, totalGeneral=0;
   let cursosA=[], cursosB=[], carreras=[];
-  let modulo = null;
+  let modulo=null, headerKpiFound=false;
 
-  for (const row of rows) {
-    const cells = row.map(v => String(v).trim());
-    const txt = cells.join('\t');
+  for (let i=0; i<rows.length; i++) {
+    const cells = rows[i].map(v => String(v ?? '').trim());
 
-    // Detectar módulo buscando en cualquier celda
-    if (cells.some(c => /^m[oó]dulo\s*a$/i.test(c))) { modulo='A'; continue; }
-    if (cells.some(c => /^m[oó]dulo\s*b$/i.test(c))) { modulo='B'; continue; }
-
-    // Alumnos únicos — fila que contiene "Alumnos Unicos" u "Alumnos Únicos"
-    if (/alumnos.{0,15}[uú]nicos/i.test(txt)) {
-      // valor numérico en la misma fila
-      cells.forEach(c => { const v=parseInt(c); if(!isNaN(v)&&v>10&&v<5000) alumnosUnicos=v; });
-      continue;
-    }
-    // 1 Curso / 2 Cursos — en la misma fila que alumnosUnicos o fila siguiente
-    if (/\b1 curso\b/i.test(txt)) {
-      const idx = cells.findIndex(c=>/^1 curso$/i.test(c));
-      if (idx>=0) { const v=parseInt(cells[idx+1]); if(!isNaN(v)) unCurso=v; }
-    }
-    if (/\b2 cursos\b/i.test(txt)) {
-      const idx = cells.findIndex(c=>/^2 cursos$/i.test(c));
-      if (idx>=0) { const v=parseInt(cells[idx+1]); if(!isNaN(v)) dosCursos=v; }
-    }
-
-    // Total general
-    if (/total\s+general/i.test(txt)) {
-      cells.forEach(c => { const v=parseInt(c); if(!isNaN(v)&&v>50) totalGeneral=v; });
-      continue;
-    }
-
-    // Cursos A y B — busco fila con número 1-4 en col B (idx 1) y nombre en col C (idx 2)
-    if (modulo && !/(subtotal|total\s+general)/i.test(txt)) {
-      // col B = cells[1], col C = cells[2], col D = cells[3]
-      if (/^[1-4]$/.test(cells[1]) && cells[2] && cells[2].length>4) {
-        const nombre = cells[2];
-        const n = parseInt(cells[3]) || 0;
-        if (n>0) {
-          if (modulo==='A') cursosA.push({nombre, n});
-          else cursosB.push({nombre, n});
-        }
-        continue;
+    // Fila de HEADER KPIs: contiene "Alumnos Unicos" en col G (idx 6)
+    if (/alumnos.{0,15}[uú]nicos/i.test(cells[6])) {
+      headerKpiFound = true;
+      // Los valores están en la FILA SIGUIENTE
+      if (i+1 < rows.length) {
+        const next = rows[i+1].map(v => String(v ?? '').trim());
+        alumnosUnicos = parseInt(next[6]) || 0;
+        unCurso       = parseInt(next[7]) || 0;
+        dosCursos     = parseInt(next[8]) || 0;
       }
+      continue;
     }
 
-    // Carreras — col G (idx 6) = carrera, H=total, I=1curso, J=2cursos, K=pct
-    if (cells[6] && /maestr[íi]|master|graduado|externo|doctorado/i.test(cells[6])) {
-      const total=parseInt(cells[7])||0;
-      const one=parseInt(cells[8])||0;
-      const two=parseInt(cells[9])||0;
-      const pct=parseFloat(cells[10])||0;
+    // Módulo A / B en col B (idx 1)
+    if (/^m[oó]dulo\s*a$/i.test(cells[1])) { modulo='A'; continue; }
+    if (/^m[oó]dulo\s*b$/i.test(cells[1])) { modulo='B'; continue; }
+
+    // Total general en col C (idx 2)
+    if (/total\s+general/i.test(cells[2])) {
+      totalGeneral = parseInt(cells[3]) || 0;
+      continue;
+    }
+
+    // Cursos: col B = número 1-4, col C = nombre, col D = inscriptos
+    if (modulo && /^[1-4]$/.test(cells[1]) && cells[2] && cells[2].length>4
+        && !/(subtotal|total)/i.test(cells[2])) {
+      const nombre = cells[2];
+      const n = parseInt(cells[3]) || 0;
+      if (n>0) {
+        if (modulo==='A') cursosA.push({nombre, n});
+        else              cursosB.push({nombre, n});
+      }
+      continue;
+    }
+
+    // Carreras: col G (idx 6) = nombre carrera
+    if (cells[6] && /maestr[íi]|master|graduado|externo|doctorado/i.test(cells[6])
+        && !/carrera/i.test(cells[6])) {
+      const total = parseInt(cells[7])  || 0;
+      const one   = parseInt(cells[8])  || 0;
+      const two   = parseInt(cells[9])  || 0;
+      const pct   = parseFloat(cells[10]) || 0;
       if (total>0) carreras.push({carrera:cells[6].trim(), total, one, two, pct});
     }
   }
 
-  // Dedup carreras
+  // Dedup y ordenar carreras
   const seen=new Set();
-  carreras = carreras.filter(c=>{ if(seen.has(c.carrera))return false; seen.add(c.carrera);return true; })
-                     .sort((a,b)=>b.total-a.total);
+  carreras = carreras
+    .filter(c=>{ if(seen.has(c.carrera))return false; seen.add(c.carrera);return true; })
+    .sort((a,b)=>b.total-a.total);
 
   return {alumnosUnicos, unCurso, dosCursos, totalGeneral, cursosA, cursosB, carreras};
 }
