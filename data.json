@@ -1,9 +1,9 @@
 {
   "resumen": {
-    "alumnosUnicos": 197,
-    "unCurso": 57,
-    "dosCursos": 140,
-    "totalGeneral": 341,
+    "alumnosUnicos": 201,
+    "unCurso": 56,
+    "dosCursos": 145,
+    "totalGeneral": 350,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -11,15 +11,15 @@
       },
       {
         "nombre": "Impact Investing",
-        "n": 31
+        "n": 32
       },
       {
         "nombre": "Geopolítica y Estrategia",
-        "n": 23
+        "n": 24
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
-        "n": 44
+        "n": 47
       }
     ],
     "cursosB": [
@@ -29,15 +29,15 @@
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 32
+        "n": 35
       },
       {
         "nombre": "Neurociencias y Liderazgo",
-        "n": 70
+        "n": 69
       },
       {
         "nombre": "Decisiones y Crecimiento",
-        "n": 37
+        "n": 39
       }
     ],
     "carreras": [
@@ -51,16 +51,16 @@
       {
         "carrera": "Master in Management",
         "total": 34,
-        "one": 11,
-        "two": 23,
-        "pct": 0.6764705882352942
+        "one": 10,
+        "two": 24,
+        "pct": 0.7058823529411765
       },
       {
         "carrera": "Maestría en Negocios Tecnológicos",
-        "total": 22,
+        "total": 25,
         "one": 1,
-        "two": 21,
-        "pct": 0.9545454545454546
+        "two": 24,
+        "pct": 0.96
       },
       {
         "carrera": "Maestría en Finanzas",
@@ -68,6 +68,13 @@
         "one": 3,
         "two": 13,
         "pct": 0.8125
+      },
+      {
+        "carrera": "Maestría en Negocios Digitales",
+        "total": 13,
+        "one": 6,
+        "two": 7,
+        "pct": 0.5384615384615384
       },
       {
         "carrera": "Maestría en Marketing y Comunicación",
@@ -82,13 +89,6 @@
         "one": 4,
         "two": 8,
         "pct": 0.6666666666666666
-      },
-      {
-        "carrera": "Maestría en Negocios Digitales",
-        "total": 12,
-        "one": 6,
-        "two": 6,
-        "pct": 0.5
       },
       {
         "carrera": "Graduado",
@@ -636,6 +636,12 @@
           "carrera": "Maestría en Negocios Digitales"
         },
         {
+          "apellido": "Carballo",
+          "nombre": "Julieta",
+          "email": "julietacarballo@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
+        },
+        {
           "apellido": "Cassinelli",
           "nombre": "María Belén",
           "email": "mcassinelli@udesa.edu.ar",
@@ -802,6 +808,12 @@
           "nombre": "Cindy",
           "email": "cbenedettihenao@udesa.edu.ar",
           "carrera": "Maestría en Finanzas"
+        },
+        {
+          "apellido": "Bergantini",
+          "nombre": "Eneas",
+          "email": "ebergantini@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
         },
         {
           "apellido": "Briones Oestrae",
@@ -990,6 +1002,12 @@
           "carrera": "Master in Management"
         },
         {
+          "apellido": "Coltrinari",
+          "nombre": "Martina del Valle",
+          "email": "mcoltrinari@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
+        },
+        {
           "apellido": "Cortez",
           "nombre": "Juliana",
           "email": "jcortezdanese@udesa.edu.ar",
@@ -1029,6 +1047,12 @@
           "apellido": "Fernandez",
           "nombre": "Natalia Lorena",
           "email": "nfernandez@udesa.edu.ar",
+          "carrera": "Master in Management"
+        },
+        {
+          "apellido": "Frutos",
+          "nombre": "Victoria",
+          "email": "vfrutos@udesa.edu.ar",
           "carrera": "Master in Management"
         },
         {
@@ -1150,6 +1174,12 @@
           "nombre": "Maximiliano",
           "email": "msanchezlamas@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
+          "apellido": "Scali Palaoro",
+          "nombre": "Ailen Arabela",
+          "email": "ascali@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
         },
         {
           "apellido": "Sclepek",
@@ -1440,6 +1470,12 @@
           "carrera": "Master in Management"
         },
         {
+          "apellido": "Bergantini",
+          "nombre": "Eneas",
+          "email": "ebergantini@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
+        },
+        {
           "apellido": "Claus",
           "nombre": "Lucas Ezequiel",
           "email": "lclaus@udesa.edu.ar",
@@ -1450,6 +1486,12 @@
           "nombre": "Nahuel",
           "email": "ncolombo@udesa.edu.ar",
           "carrera": "Master in Management"
+        },
+        {
+          "apellido": "Coltrinari",
+          "nombre": "Martina del Valle",
+          "email": "mcoltrinari@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
         },
         {
           "apellido": "Cornejo",
@@ -1485,6 +1527,12 @@
           "apellido": "Foritano Fiad",
           "nombre": "Valentina",
           "email": "vforitanofiad@udesa.edu.ar",
+          "carrera": "Master in Management"
+        },
+        {
+          "apellido": "Frutos",
+          "nombre": "Victoria",
+          "email": "vfrutos@udesa.edu.ar",
           "carrera": "Master in Management"
         },
         {
@@ -1642,12 +1690,6 @@
           "nombre": "Romina Alejandra",
           "email": "Rarganaraz@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios de Salud"
-        },
-        {
-          "apellido": "Arias",
-          "nombre": "Federico Armando",
-          "email": "ariasf@udesa.edu.ar",
-          "carrera": "Master in Management"
         },
         {
           "apellido": "Avakian",
@@ -2052,6 +2094,12 @@
           "carrera": "Maestría en Negocios Tecnológicos"
         },
         {
+          "apellido": "Carballo",
+          "nombre": "Julieta",
+          "email": "julietacarballo@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Tecnológicos"
+        },
+        {
           "apellido": "Castro Piñerua",
           "nombre": "Armando Enrique",
           "email": "castroa@udesa.edu.ar",
@@ -2202,6 +2250,12 @@
           "carrera": "Master in Management"
         },
         {
+          "apellido": "Scali Palaoro",
+          "nombre": "Ailen Arabela",
+          "email": "ascali@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
+        },
+        {
           "apellido": "Sanchez Lamas",
           "nombre": "Maximiliano",
           "email": "msanchezlamas@udesa.edu.ar",
@@ -2246,5 +2300,5 @@
       ]
     }
   },
-  "fecha": "11 de junio de 2026"
+  "fecha": "12 de junio de 2026"
 }
