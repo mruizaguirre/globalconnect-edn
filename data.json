@@ -1,9 +1,9 @@
 {
   "resumen": {
-    "alumnosUnicos": 201,
-    "unCurso": 56,
-    "dosCursos": 145,
-    "totalGeneral": 350,
+    "alumnosUnicos": 209,
+    "unCurso": 58,
+    "dosCursos": 151,
+    "totalGeneral": 362,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -15,11 +15,11 @@
       },
       {
         "nombre": "Geopolítica y Estrategia",
-        "n": 24
+        "n": 26
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
-        "n": 47
+        "n": 52
       }
     ],
     "cursosB": [
@@ -29,7 +29,7 @@
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 35
+        "n": 36
       },
       {
         "nombre": "Neurociencias y Liderazgo",
@@ -37,7 +37,7 @@
       },
       {
         "nombre": "Decisiones y Crecimiento",
-        "n": 39
+        "n": 43
       }
     ],
     "carreras": [
@@ -50,10 +50,10 @@
       },
       {
         "carrera": "Master in Management",
-        "total": 34,
+        "total": 35,
         "one": 10,
-        "two": 24,
-        "pct": 0.7058823529411765
+        "two": 25,
+        "pct": 0.7142857142857143
       },
       {
         "carrera": "Maestría en Negocios Tecnológicos",
@@ -71,24 +71,24 @@
       },
       {
         "carrera": "Maestría en Negocios Digitales",
-        "total": 13,
+        "total": 14,
         "one": 6,
-        "two": 7,
-        "pct": 0.5384615384615384
+        "two": 8,
+        "pct": 0.5714285714285714
       },
       {
         "carrera": "Maestría en Marketing y Comunicación",
-        "total": 13,
+        "total": 14,
         "one": 5,
-        "two": 8,
-        "pct": 0.6153846153846154
+        "two": 9,
+        "pct": 0.6428571428571429
       },
       {
         "carrera": "Maestria en Finanzas (Modalidad a distancia)",
-        "total": 12,
+        "total": 13,
         "one": 4,
-        "two": 8,
-        "pct": 0.6666666666666666
+        "two": 9,
+        "pct": 0.6923076923076923
       },
       {
         "carrera": "Graduado",
@@ -98,6 +98,20 @@
         "pct": 0.4166666666666667
       },
       {
+        "carrera": "Maestría en Gestión y Dirección de Recursos Humanos",
+        "total": 9,
+        "one": 4,
+        "two": 5,
+        "pct": 0.5555555555555556
+      },
+      {
+        "carrera": "Maestría en Administración de Negocios",
+        "total": 9,
+        "one": 3,
+        "two": 6,
+        "pct": 0.6666666666666666
+      },
+      {
         "carrera": "Maestría en Administración de Negocios de Salud",
         "total": 8,
         "one": 1,
@@ -105,25 +119,11 @@
         "pct": 0.875
       },
       {
-        "carrera": "Maestría en Gestión y Dirección de Recursos Humanos",
-        "total": 8,
-        "one": 3,
-        "two": 5,
-        "pct": 0.625
-      },
-      {
-        "carrera": "Maestría en Administración de Negocios",
-        "total": 7,
-        "one": 3,
-        "two": 4,
-        "pct": 0.5714285714285714
-      },
-      {
         "carrera": "Maestria en Marketing y Comunicacion (Modalidad a distancia)",
-        "total": 5,
-        "one": 1,
+        "total": 6,
+        "one": 2,
         "two": 4,
-        "pct": 0.8
+        "pct": 0.6666666666666666
       },
       {
         "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)",
@@ -720,12 +720,6 @@
           "carrera": "Maestría en Finanzas"
         },
         {
-          "apellido": "Navazzotti",
-          "nombre": "Pablo",
-          "email": "pnavazzotti@udesa.edu.ar",
-          "carrera": "Master in Management"
-        },
-        {
           "apellido": "Nudelman",
           "nombre": "Valentina",
           "email": "vnudelman@udesa.edu.ar",
@@ -742,6 +736,12 @@
           "nombre": "Luis Santiago",
           "email": "lportaluppidiana@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
+          "apellido": "Rabey",
+          "nombre": "Lucia",
+          "email": "luciarabey@gmail.com",
+          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos"
         },
         {
           "apellido": "Romano",
@@ -852,6 +852,12 @@
           "carrera": "Doctorado en Administración de Negocios"
         },
         {
+          "apellido": "Irazustq",
+          "nombre": "Belen",
+          "email": "Mirazusta@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios"
+        },
+        {
           "apellido": "Knorre",
           "nombre": "Lucía",
           "email": "lknorre@udesa.edu.ar",
@@ -868,6 +874,12 @@
           "nombre": "Maria Pilar",
           "email": "pmarso@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios"
+        },
+        {
+          "apellido": "Mildenberger",
+          "nombre": "Alejandro",
+          "email": "amildenberger@udesa.edu.ar",
+          "carrera": "Master in Management"
         },
         {
           "apellido": "Moreno",
@@ -1032,16 +1044,16 @@
           "carrera": "Externo"
         },
         {
-          "apellido": "Diedrichs",
-          "nombre": "Gustavo Adolfo",
-          "email": "gdiedrichs@udesa.edu.ar",
-          "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
-        },
-        {
           "apellido": "Di Tommaso",
           "nombre": "Leandro Damian",
           "email": "lditommaso@udesa.edu.ar",
           "carrera": "Doctorado en Administración de Negocios"
+        },
+        {
+          "apellido": "Diedrichs",
+          "nombre": "Gustavo Adolfo",
+          "email": "gdiedrichs@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
           "apellido": "Fernandez",
@@ -1050,10 +1062,22 @@
           "carrera": "Master in Management"
         },
         {
+          "apellido": "FLORES LAZDIN",
+          "nombre": "CAROLINA",
+          "email": "cfloreslazdin@udesa.edu.ar",
+          "carrera": "Maestria en Marketing y Comunicación"
+        },
+        {
           "apellido": "Frutos",
           "nombre": "Victoria",
           "email": "vfrutos@udesa.edu.ar",
           "carrera": "Master in Management"
+        },
+        {
+          "apellido": "Galera",
+          "nombre": "Maria Victoria",
+          "email": "mgalera@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios"
         },
         {
           "apellido": "Gallo Garin",
@@ -1104,6 +1128,12 @@
           "carrera": "Graduado"
         },
         {
+          "apellido": "Lattanzi",
+          "nombre": "Natalio Adelio Angel",
+          "email": "nlattanzi@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
+        },
+        {
           "apellido": "Maldonado Rodriguez",
           "nombre": "Cristian Alonso",
           "email": "cmaldonadorodriguez@udesa.edu.ar",
@@ -1140,6 +1170,12 @@
           "carrera": "Maestria en Marketing y Comunicacion (Modalidad a distancia)"
         },
         {
+          "apellido": "Navazzotti",
+          "nombre": "Pablo",
+          "email": "pnavazzotti@udesa.edu.ar",
+          "carrera": "Master in Management"
+        },
+        {
           "apellido": "Reigada Broemmel",
           "nombre": "Joaquín Ignacio",
           "email": "jreigadabroemmel@udesa.edu.ar",
@@ -1150,6 +1186,12 @@
           "nombre": "Magdalena",
           "email": "mroccasaravia@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
+          "apellido": "Rodriguez Papaianni",
+          "nombre": "Agustin Eduardo",
+          "email": "arodriguezpapaianni@udesa.edu.ar",
+          "carrera": "Maestria en Finanzas (Modalidad a distancia)"
         },
         {
           "apellido": "Rueda",
@@ -1398,6 +1440,12 @@
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
+          "apellido": "Rodriguez Papaianni",
+          "nombre": "Agustin Eduardo",
+          "email": "arodriguezpapaianni@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios"
+        },
+        {
           "apellido": "Suarez Doriga",
           "nombre": "Nicolas",
           "email": "nsuarezdoriga@udesa.edu.ar",
@@ -1427,12 +1475,6 @@
       "modulo": "B",
       "profesor": "García Herrera Cristóbal",
       "alumnos": [
-        {
-          "apellido": "Acuña",
-          "nombre": "Mariano José",
-          "email": "mjacuna@udesa.edu.ar",
-          "carrera": "Maestría en Negocios Tecnológicos"
-        },
         {
           "apellido": "Alfonso",
           "nombre": "Maria del Rosario",
@@ -1542,6 +1584,12 @@
           "carrera": "Maestría en Negocios Digitales"
         },
         {
+          "apellido": "Galera",
+          "nombre": "Maria Victoria",
+          "email": "mgalera@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios"
+        },
+        {
           "apellido": "Garriga",
           "nombre": "Victoria",
           "email": "vgarriga@udesa.edu.ar",
@@ -1552,6 +1600,12 @@
           "nombre": "Selva",
           "email": "selvagonzalez@udesa.edu.ar",
           "carrera": "Maestria en Finanzas (Modalidad a distancia)"
+        },
+        {
+          "apellido": "Lattanzi",
+          "nombre": "Natalio Adelio Angel",
+          "email": "nlattanzi@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
         },
         {
           "apellido": "López Daneri",
@@ -2124,22 +2178,28 @@
           "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)"
         },
         {
-          "apellido": "Diedrichs",
-          "nombre": "Gustavo Adolfo",
-          "email": "gdiedrichs@udesa.edu.ar",
-          "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
-        },
-        {
           "apellido": "Di Tommaso",
           "nombre": "Leandro Damian",
           "email": "lditommaso@udesa.edu.ar",
           "carrera": "Doctorado en Administración de Negocios"
         },
         {
+          "apellido": "Diedrichs",
+          "nombre": "Gustavo Adolfo",
+          "email": "gdiedrichs@udesa.edu.ar",
+          "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
           "apellido": "Fazzari",
           "nombre": "Camila Rocio",
           "email": "cfazzari@udesa.edu.ar",
           "carrera": "Maestría en Marketing y Comunicación"
+        },
+        {
+          "apellido": "FLORES LAZDIN",
+          "nombre": "CAROLINA",
+          "email": "cfloreslazdin@udesa.edu.ar",
+          "carrera": "Maestria en Finanzas (Modalidad a distancia)"
         },
         {
           "apellido": "Galli",
@@ -2166,6 +2226,12 @@
           "carrera": "Maestría en Marketing y Comunicación"
         },
         {
+          "apellido": "Irazustq",
+          "nombre": "Belen",
+          "email": "Mirazusta@udesa.edu.ar",
+          "carrera": "Master in Management"
+        },
+        {
           "apellido": "Jaef",
           "nombre": "Lucía",
           "email": "ljaef@udesa.edu.ar",
@@ -2188,6 +2254,12 @@
           "nombre": "Konstantina",
           "email": "michalopoulosk@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
+          "apellido": "Mildenberger",
+          "nombre": "Alejandro",
+          "email": "amildenberger@udesa.edu.ar",
+          "carrera": "Maestria en Marketing y Comunicación"
         },
         {
           "apellido": "Millán Beltrán",
@@ -2226,6 +2298,12 @@
           "carrera": "Maestría en Marketing y Comunicación"
         },
         {
+          "apellido": "Rabey",
+          "nombre": "Lucia",
+          "email": "luciarabey@gmail.com",
+          "carrera": "Maestria en Marketing y Comunicacion (Modalidad a distancia)"
+        },
+        {
           "apellido": "Reigada Broemmel",
           "nombre": "Joaquín Ignacio",
           "email": "jreigadabroemmel@udesa.edu.ar",
@@ -2250,16 +2328,16 @@
           "carrera": "Master in Management"
         },
         {
-          "apellido": "Scali Palaoro",
-          "nombre": "Ailen Arabela",
-          "email": "ascali@udesa.edu.ar",
-          "carrera": "Maestría en Negocios Digitales"
-        },
-        {
           "apellido": "Sanchez Lamas",
           "nombre": "Maximiliano",
           "email": "msanchezlamas@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+        },
+        {
+          "apellido": "Scali Palaoro",
+          "nombre": "Ailen Arabela",
+          "email": "ascali@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
         },
         {
           "apellido": "Simoncini",
@@ -2300,5 +2378,5 @@
       ]
     }
   },
-  "fecha": "12 de junio de 2026"
+  "fecha": "16 de junio de 2026"
 }
