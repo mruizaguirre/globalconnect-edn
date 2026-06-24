@@ -1,13 +1,13 @@
 {
   "resumen": {
-    "alumnosUnicos": 224,
-    "unCurso": 65,
+    "alumnosUnicos": 225,
+    "unCurso": 66,
     "dosCursos": 159,
-    "totalGeneral": 385,
+    "totalGeneral": 381,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
-        "n": 70
+        "n": 68
       },
       {
         "nombre": "Impact Investing",
@@ -19,13 +19,13 @@
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
-        "n": 59
+        "n": 58
       }
     ],
     "cursosB": [
       {
         "nombre": "Reestructuración Financiera",
-        "n": 38
+        "n": 37
       },
       {
         "nombre": "Problemas Malditos e Innovación",
@@ -33,11 +33,11 @@
       },
       {
         "nombre": "Neurociencias y Liderazgo",
-        "n": 73
+        "n": 72
       },
       {
         "nombre": "Decisiones y Crecimiento",
-        "n": 47
+        "n": 48
       }
     ],
     "carreras": [
@@ -70,6 +70,13 @@
         "pct": 0.7647058823529411
       },
       {
+        "carrera": "Maestría en Negocios Digitales",
+        "total": 14,
+        "one": 6,
+        "two": 8,
+        "pct": 0.5714285714285714
+      },
+      {
         "carrera": "Maestría en Marketing y Comunicación",
         "total": 14,
         "one": 5,
@@ -82,13 +89,6 @@
         "one": 4,
         "two": 9,
         "pct": 0.6923076923076923
-      },
-      {
-        "carrera": "Maestría en Negocios Digitales",
-        "total": 13,
-        "one": 5,
-        "two": 8,
-        "pct": 0.6153846153846154
       },
       {
         "carrera": "Graduado",
@@ -280,12 +280,6 @@
           "nombre": "José Gabriel",
           "email": "josedalterio@gmail.com",
           "carrera": "Graduado"
-        },
-        {
-          "apellido": "Delgado",
-          "nombre": "Mateo Tomás",
-          "email": "delgadom@udesa.edu.ar",
-          "carrera": "Maestría en Finanzas"
         },
         {
           "apellido": "Diaz",
@@ -580,12 +574,6 @@
           "nombre": "Candela Milagros",
           "email": "cviscarret@udesa.edu.ar",
           "carrera": "Maestría en Finanzas"
-        },
-        {
-          "apellido": "Vitali",
-          "nombre": "Santiago",
-          "email": "svitali@udesa.edu.ar",
-          "carrera": "Master in Management"
         }
       ]
     },
@@ -750,12 +738,6 @@
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
-          "apellido": "Rabey",
-          "nombre": "Lucia",
-          "email": "luciarabey@gmail.com",
-          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos"
-        },
-        {
           "apellido": "Romano",
           "nombre": "Victoria Inés",
           "email": "vromano@udesa.edu.ar",
@@ -796,6 +778,12 @@
           "nombre": "Nicolás",
           "email": "Nvillalbaguinazu@udesa.edu.ar",
           "carrera": "Maestria en Finanzas (Modalidad a distancia)"
+        },
+        {
+          "apellido": "Vitali",
+          "nombre": "Santiago",
+          "email": "svitali@udesa.edu.ar",
+          "carrera": "Master in Management"
         },
         {
           "apellido": "Yaryes Calo",
@@ -852,12 +840,6 @@
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
-          "apellido": "Cordenons",
-          "nombre": "Sofia",
-          "email": "scordenons@udesa.edu.ar",
-          "carrera": "Master in Management"
-        },
-        {
           "apellido": "Cornejo",
           "nombre": "Arturo",
           "email": "acornejo@udesa.edu.ar",
@@ -892,6 +874,12 @@
           "nombre": "Nicolas Baltasar",
           "email": "nicko1091@gmail.com",
           "carrera": "Graduado"
+        },
+        {
+          "apellido": "Luna",
+          "nombre": "Maximiliano",
+          "email": "lunam@udesa.edu.ar",
+          "carrera": "Maestria en Finanzas (Modalidad a distancia)"
         },
         {
           "apellido": "Maldonado",
@@ -1002,12 +990,6 @@
           "carrera": "Master in Management"
         },
         {
-          "apellido": "Argañaraz",
-          "nombre": "Romina Alejandra",
-          "email": "Rarganaraz@udesa.edu.ar",
-          "carrera": "Maestría en Administración de Negocios de Salud"
-        },
-        {
           "apellido": "Bauza",
           "nombre": "Martina",
           "email": "bauzam@udesa.edu.ar",
@@ -1108,12 +1090,6 @@
           "nombre": "Victoria",
           "email": "vfrutos@udesa.edu.ar",
           "carrera": "Master in Management"
-        },
-        {
-          "apellido": "Galera",
-          "nombre": "Maria Victoria",
-          "email": "mgalera@udesa.edu.ar",
-          "carrera": "Maestría en Administración de Negocios"
         },
         {
           "apellido": "Gallo Garin",
@@ -1228,6 +1204,12 @@
           "nombre": "Pablo",
           "email": "pnavazzotti@udesa.edu.ar",
           "carrera": "Master in Management"
+        },
+        {
+          "apellido": "Pulido",
+          "nombre": "Malena",
+          "email": "mpulido@udesa.edu.ar",
+          "carrera": "Maestría en Negocios Digitales"
         },
         {
           "apellido": "Rabey",
@@ -1474,12 +1456,6 @@
           "nombre": "Tomas",
           "email": "tluduena@udesa.edu.ar",
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
-        },
-        {
-          "apellido": "Luna",
-          "nombre": "Maximiliano",
-          "email": "lunam@udesa.edu.ar",
-          "carrera": "Maestria en Finanzas (Modalidad a distancia)"
         },
         {
           "apellido": "Martinez",
@@ -1828,12 +1804,6 @@
           "nombre": "Martina",
           "email": "manderson@udesa.edu.ar",
           "carrera": "Maestría en Finanzas"
-        },
-        {
-          "apellido": "Argañaraz",
-          "nombre": "Romina Alejandra",
-          "email": "Rarganaraz@udesa.edu.ar",
-          "carrera": "Maestría en Administración de Negocios de Salud"
         },
         {
           "apellido": "Avakian",
@@ -2370,6 +2340,12 @@
           "carrera": "Maestría en Negocios Digitales"
         },
         {
+          "apellido": "Luna",
+          "nombre": "Maximiliano",
+          "email": "lunam@udesa.edu.ar",
+          "carrera": "Maestria en Finanzas (Modalidad a distancia)"
+        },
+        {
           "apellido": "Marin",
           "nombre": "Maria Celeste",
           "email": "mmarin@udesa.edu.ar",
@@ -2522,5 +2498,5 @@
       ]
     }
   },
-  "fecha": "18 de junio de 2026"
+  "fecha": "24 de junio de 2026"
 }
