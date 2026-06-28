@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#0A2540;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.box{background:#fff;border-radius:16px;padding:40px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.box{background:#fff;border-radius:16px;padding:40px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .logo{text-align:center;margin-bottom:28px}
 .logo h1{color:#0A2540;font-size:18px;font-weight:700;margin-top:8px}
 .logo p{color:#6C757D;font-size:13px;margin-top:4px}
@@ -29,8 +29,10 @@ small{font-size:11px;color:#ADB5BD;display:block;margin-bottom:20px}
 .ok{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
 .err{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
 .loading{background:#EFF6FF;color:#1E40AF;border:1px solid #93C5FD}
+.warn{background:#FFFBEB;color:#92400E;border:1px solid #FCD34D}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid #93C5FD;border-top-color:#1E40AF;border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:middle}
 @keyframes sp{to{transform:rotate(360deg)}}
+.debug{background:#F8F9FA;border:1px solid #DEE2E6;border-radius:8px;padding:10px 14px;font-size:11px;font-family:monospace;color:#495057;margin-top:12px;max-height:140px;overflow-y:auto;display:none;white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -59,11 +61,18 @@ small{font-size:11px;color:#ADB5BD;display:block;margin-bottom:20px}
   <div class="finfo" id="finfo"></div>
   <button class="btn" id="pubBtn" disabled onclick="publicar()">📤 Procesar y publicar</button>
   <div class="status" id="status"></div>
+  <div class="debug" id="debug"></div>
 </div>
 
 <script>
 var OWNER='mruizaguirre', REPO='globalconnect-edn', FILE='data.json';
 var parsed=null;
+
+function log(msg){
+  var el=document.getElementById('debug');
+  el.style.display='block';
+  el.textContent+=msg+'\n';
+}
 
 function onDrop(e){
   e.preventDefault();
@@ -73,6 +82,7 @@ function onDrop(e){
 
 function onFile(file){
   if(!file)return;
+  document.getElementById('debug').textContent='';
   var match=file.name.match(/(\d{2}-\d{2})/);
   var fecha='';
   if(match){
@@ -87,25 +97,44 @@ function onFile(file){
   reader.onload=function(e){
     try{
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      log('Pestañas encontradas: '+wb.SheetNames.join(', '));
       var resumen=parseResumen(wb);
       var modulo=parseModulo(wb);
       var dormis=parseDormis(wb);
       parsed={resumen:resumen,modulo:modulo,dormis:dormis,fecha:fecha};
       var fi=document.getElementById('finfo');
       fi.style.display='block';
-      fi.innerHTML='✅ <strong>'+file.name+'</strong> · '+resumen.alumnosUnicos+' alumnos · '+Object.keys(modulo).length+' cursos';
+      fi.innerHTML='✅ <strong>'+file.name+'</strong> · '
+        +resumen.alumnosUnicos+' alumnos únicos · '
+        +resumen.carreras.length+' carreras · '
+        +Object.keys(modulo).length+' cursos'
+        +(dormis?' · '+dormis.totalAlumnos+' dormis':'');
       document.getElementById('pubBtn').disabled=false;
-      showStatus('Archivo listo. Hacé clic en "Procesar y publicar".','ok');
+      showStatus('Archivo procesado correctamente. Revisá el log y hacé clic en "Procesar y publicar".','ok');
     }catch(err){
       showStatus('❌ Error: '+err.message,'err');
+      log('ERROR: '+err.message);
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
+function parsePct(val){
+  // El Excel puede guardar el porcentaje como decimal (0.73) o como entero (73)
+  var n=parseFloat(val)||0;
+  if(n>0&&n<=1) return Math.round(n*100);   // decimal → porcentaje
+  if(n>1&&n<=100) return Math.round(n);      // ya es porcentaje
+  return 0;
+}
+
 function parseResumen(wb){
   var sn=wb.SheetNames.find(function(n){return n.toLowerCase().includes('resumen total')});
-  if(!sn)throw new Error('No se encontró pestaña "Resumen Total"');
+  if(!sn){
+    // fallback: buscar pestaña que contenga "resumen" y no "módulo" ni "dormis"
+    sn=wb.SheetNames.find(function(n){return /resumen/i.test(n)&&!/m[oó]dulo/i.test(n)&&!/dormis/i.test(n)});
+  }
+  if(!sn)throw new Error('No se encontró pestaña "Resumen Total". Pestañas: '+wb.SheetNames.join(', '));
+  log('Resumen Total → pestaña: "'+sn+'"');
   var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
   var alumnosUnicos=0,unCurso=0,dosCursos=0,totalGeneral=0;
   var cursosA=[],cursosB=[],carreras=[];
@@ -114,56 +143,66 @@ function parseResumen(wb){
   for(var i=0;i<rows.length;i++){
     var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
 
-    // Módulo — está en col B (idx 1)
-    if(/^m[oó]dulo\s*a$/i.test(c[1])){modulo='A';continue;}
-    if(/^m[oó]dulo\s*b$/i.test(c[1])){modulo='B';continue;}
+    // Módulo — buscarlo en cualquier columna de la fila
+    var rowStr=c.join('|').toLowerCase();
+    if(/m[oó]dulo\s*a/.test(rowStr)&&!/m[oó]dulo\s*b/.test(rowStr)){modulo='A';continue;}
+    if(/m[oó]dulo\s*b/.test(rowStr)&&!/m[oó]dulo\s*a/.test(rowStr)){modulo='B';continue;}
 
-    // Alumnos únicos — header en col G (idx 6), valores en fila siguiente
-    if(/alumnos.{0,15}[uú]nicos/i.test(c[6])){
-      if(i+1<rows.length){
-        var nr=rows[i+1].map(function(v){return String(v==null?'':v).trim()});
-        alumnosUnicos=parseInt(nr[6])||0;
-        unCurso=parseInt(nr[7])||0;
-        dosCursos=parseInt(nr[8])||0;
-      }
+    // Alumnos únicos — buscar el header en cualquier celda de la fila
+    var auIdx=c.findIndex(function(v){return /alumnos.{0,15}[uú]nicos/i.test(v)});
+    if(auIdx>=0&&i+1<rows.length){
+      var nr=rows[i+1].map(function(v){return String(v==null?'':v).trim()});
+      alumnosUnicos=parseInt(nr[auIdx])||0;
+      unCurso=parseInt(nr[auIdx+1])||0;
+      dosCursos=parseInt(nr[auIdx+2])||0;
+      log('Alumnos únicos='+alumnosUnicos+' | 1 curso='+unCurso+' | 2 cursos='+dosCursos);
     }
 
-    // Total general col C (idx 2)
-    if(/total\s+general/i.test(c[2]))totalGeneral=parseInt(c[3])||0;
+    // Total general — buscar en cualquier celda
+    var tgIdx=c.findIndex(function(v){return /total\s+general/i.test(v)});
+    if(tgIdx>=0) totalGeneral=parseInt(c[tgIdx+1])||0;
 
-    // Cursos: col B=numero, col C=nombre, col D=n
-    if(modulo&&/^[1-4]$/.test(c[1])&&c[2]&&c[2].length>4){
+    // Cursos: nro en col B (idx 1), nombre en col C (idx 2), n en col D (idx 3)
+    if(modulo&&/^[1-9]$/.test(c[1])&&c[2]&&c[2].length>4){
       var n=parseInt(c[3])||0;
       if(n>0){
-        if(modulo==='A')cursosA.push({nombre:c[2],n:n});
+        if(modulo==='A') cursosA.push({nombre:c[2],n:n});
         else cursosB.push({nombre:c[2],n:n});
       }
     }
 
-    // Carreras: buscar header "Carrera" en col G (idx 6), luego leer filas siguientes
-    if(c[6].toLowerCase()==='carrera'){
+    // Carreras: buscar header "Carrera" en cualquier columna
+    var carreraHdrIdx=c.findIndex(function(v){return v.toLowerCase()==='carrera'});
+    if(carreraHdrIdx>=0){
+      log('Header "Carrera" en fila '+i+', col '+carreraHdrIdx);
       for(var j=i+1;j<rows.length;j++){
         var cr=rows[j].map(function(v){return String(v==null?'':v).trim()});
-        if(!cr[6])continue;
-        var total=parseInt(cr[7])||0;
+        var nombre=cr[carreraHdrIdx];
+        if(!nombre||/^(carrera|global\s*connect|total)/i.test(nombre))continue;
+        var total=parseInt(cr[carreraHdrIdx+1])||0;
         if(total>0){
-          var one=parseInt(cr[8])||0;
-          var two=parseInt(cr[9])||0;
-          var pct=parseFloat(cr[10])||0;
-          var pctFinal=Math.round(pct*100);
-          carreras.push({carrera:cr[6],total:total,one:one,two:two,pct:pctFinal});
+          var one=parseInt(cr[carreraHdrIdx+2])||0;
+          var two=parseInt(cr[carreraHdrIdx+3])||0;
+          var pctRaw=cr[carreraHdrIdx+4];
+          var pctFinal=parsePct(pctRaw);
+          log('  Carrera: "'+nombre+'" total='+total+' one='+one+' two='+two+' pctRaw='+pctRaw+' → '+pctFinal+'%');
+          carreras.push({carrera:nombre,total:total,one:one,two:two,pct:pctFinal});
         }
       }
-      break; // ya leímos todas
+      break;
     }
   }
 
+  log('Carreras leídas: '+carreras.length+' | cursosA: '+cursosA.length+' | cursosB: '+cursosB.length);
   return{alumnosUnicos:alumnosUnicos,unCurso:unCurso,dosCursos:dosCursos,totalGeneral:totalGeneral,cursosA:cursosA,cursosB:cursosB,carreras:carreras};
 }
 
 function parseModulo(wb){
-  var sn=wb.SheetNames.find(function(n){return /resumen por m[oó]dulo/i.test(n)||(/m[oó]dulo/i.test(n)&&!/resumen dormis/i.test(n)&&!/resumen total/i.test(n))});
-  if(!sn)return{};
+  var sn=wb.SheetNames.find(function(n){
+    return /resumen por m[oó]dulo/i.test(n)||(/m[oó]dulo/i.test(n)&&!/resumen dormis/i.test(n)&&!/resumen total/i.test(n));
+  });
+  if(!sn){log('Sin pestaña módulos');return{};}
+  log('Módulos → pestaña: "'+sn+'"');
   var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
   var cursos={},cursoActual=null,modActual=null;
 
@@ -188,13 +227,15 @@ function parseModulo(wb){
       cursos[cursoActual].alumnos.push({apellido:c[1],nombre:c[2],email:c[3],carrera:c[4]});
     }
   }
+  log('Cursos cargados: '+Object.keys(cursos).join(', '));
   return cursos;
 }
 
 function parseDormis(wb){
   var snR=wb.SheetNames.find(function(n){return /resumen dormis/i.test(n)});
   var snN=wb.SheetNames.find(function(n){return /con nombres/i.test(n)});
-  if(!snR&&!snN)return null;
+  if(!snR&&!snN){log('Sin pestañas dormis');return null;}
+  log('Dormis → resumen:"'+(snR||'—')+'" nombres:"'+(snN||'—')+'"');
 
   var baseSimple=0,baseDoble=0,totalRes=0,totalAlum=0;
   var bloques=[],carrerasDormis=[],alumnos=[];
@@ -214,10 +255,11 @@ function parseDormis(wb){
         var bs=parseInt(c[1])||0,bd=parseInt(c[2])||0;
         if(bs+bd>0)bloques.push({bloque:c[0],simple:bs,doble:bd,reservas:parseInt(c[3])||0,alumnos:parseInt(c[4])||0});
       }
-      // Carreras col H (idx 7)
+      // Carreras en columnas H+ (idx 7+)
       if(c[7]&&c[7].length>3&&!/^(carrera|global|total)/i.test(c[7])){
-        var cant=parseInt(c[8])||0,pct=parseFloat(c[9])||0;
-        if(cant>0)carrerasDormis.push({carrera:c[7],cant:cant,pct:Math.round(pct)});
+        var cant=parseInt(c[8])||0;
+        var pctDormis=parsePct(c[9]);
+        if(cant>0)carrerasDormis.push({carrera:c[7],cant:cant,pct:pctDormis});
       }
     }
   }
@@ -229,8 +271,9 @@ function parseDormis(wb){
       var c2=rows2[j].map(function(v){return String(v==null?'':v).replace(/\n/g,' ').trim()});
       if(/^apellido/i.test(c2[0])){hf2=true;continue}
       if(!hf2||!c2[0]||/^total/i.test(c2[0]))continue;
-      alumnos.push({nombre:c2[0],email:c2[1],bloque:c2[2],tipo:c2[3],acompanante:c2[4],observaciones:c2[5],carrera:c2[6]});
+      alumnos.push({nombre:c2[0],email:c2[1],bloque:c2[2],tipo:c2[3],acompanante:c2[4]||'',observaciones:c2[5]||''});
     }
+    log('Alumnos dormis: '+alumnos.length);
   }
 
   return{baseSimple:baseSimple,baseDoble:baseDoble,totalReservas:totalRes,totalAlumnos:totalAlum,bloques:bloques,carreras:carrerasDormis,alumnos:alumnos};
