@@ -232,11 +232,13 @@ function render(d){
       +'<td style="text-align:center">'+dm.totalAlumnos+'</td></tr>';
 
     var maxCd=dm.carreras.length?dm.carreras[0].cant:1;
+    var totalAlumDorm=dm.totalAlumnos||1;
     var cR=dm.carreras.map(function(c){
       var p=Math.round(c.cant/maxCd*100);
+      var pctReal=(c.cant/totalAlumDorm*100).toFixed(1);
       return '<tr><td>'+c.carrera+'</td><td style="text-align:center;font-weight:700">'+c.cant+'</td>'
         +'<td><div class="pb"><div class="pt"><div class="pf" style="width:'+p+'%"></div></div>'
-        +'<span style="font-size:11px;color:#0A2540;font-weight:600">'+c.pct+'%</span></div></td></tr>';
+        +'<span style="font-size:11px;color:#0A2540;font-weight:600">'+pctReal+'%</span></div></td></tr>';
     }).join('');
 
     // Tabla nominal SIN columna observaciones
