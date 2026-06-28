@@ -138,12 +138,12 @@ function render(d){
 
   // TABS
   var tabs='<button class="tab on" onclick="showTab(\'resumen\',this)">📊 Resumen</button>';
+  if(dm)tabs+='<button class="tab" onclick="showTab(\'dormis\',this)">🏨 Dormis</button>';
   ck.forEach(function(n,i){
     var info=md[n];
     var s=n.length>20?n.substring(0,20)+'…':n;
     tabs+='<button class="tab" onclick="showTab(\'c'+i+'\',this)">'+info.modulo+' · '+s+'</button>';
   });
-  if(dm)tabs+='<button class="tab" onclick="showTab(\'dormis\',this)">🏨 Dormis</button>';
 
   // BARRAS CURSOS
   var bC=tc.map(function(c){
@@ -234,7 +234,7 @@ function render(d){
         +'<td>'+a.nombre+'</td><td style="color:#6C757D">'+a.email+'</td>'
         +'<td>'+a.bloque+'</td><td>'+tb+'</td>'
         +'<td style="color:#495057">'+a.acompanante+'</td>'
-        +'<td style="color:#6C757D;font-size:11px">'+a.observaciones+'</td></tr>';
+        +'</tr>';
     }).join('');
 
     pdh='<div id="dormis" class="pnl">'
@@ -253,7 +253,7 @@ function render(d){
       +'</div>'
       +'<div class="card" style="margin-bottom:20px"><div class="stitle">Listado Nominal</div>'
       +'<input class="sbox" type="text" placeholder="🔍 Buscar por nombre, bloque o carrera..." oninput="filtrar(this,\'tdormis\')">'
-      +'<div class="tw"><table id="tdormis"><thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Bloque</th><th>Tipo</th><th>Acompañante</th><th>Observaciones</th></tr></thead>'
+      +'<div class="tw"><table id="tdormis"><thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Bloque</th><th>Tipo</th><th>Acompañante</th></tr></thead>'
       +'<tbody>'+aR+'</tbody></table></div></div>'
       +'</div>';
   }

@@ -150,7 +150,7 @@ function parseResumen(wb){
           var one=parseInt(cr[8])||0;
           var two=parseInt(cr[9])||0;
           var pct=parseFloat(cr[10])||0;
-          var pctFinal=pct<2?Math.round(pct*100):Math.round(pct);
+          var pctFinal=Math.round(pct*100);
           carreras.push({carrera:cr[6],total:total,one:one,two:two,pct:pctFinal});
         }
       }
