@@ -29,10 +29,9 @@ small{font-size:11px;color:#ADB5BD;display:block;margin-bottom:20px}
 .ok{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
 .err{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
 .loading{background:#EFF6FF;color:#1E40AF;border:1px solid #93C5FD}
-.warn{background:#FFFBEB;color:#92400E;border:1px solid #FCD34D}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid #93C5FD;border-top-color:#1E40AF;border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:middle}
 @keyframes sp{to{transform:rotate(360deg)}}
-.debug{background:#F8F9FA;border:1px solid #DEE2E6;border-radius:8px;padding:10px 14px;font-size:11px;font-family:monospace;color:#495057;margin-top:12px;max-height:140px;overflow-y:auto;display:none;white-space:pre-wrap}
+.debug{background:#F8F9FA;border:1px solid #DEE2E6;border-radius:8px;padding:10px 14px;font-size:11px;font-family:monospace;color:#495057;margin-top:12px;max-height:180px;overflow-y:auto;display:none;white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -73,6 +72,9 @@ function log(msg){
   el.style.display='block';
   el.textContent+=msg+'\n';
 }
+function clr(v){ return String(v==null?'':v).replace(/\n/g,' ').trim(); }
+function num(v){ var n=parseFloat(String(v==null?'':v).replace(',','.')); return isNaN(n)?0:n; }
+function pct(two,total){ return total>0?Math.round((two/total)*100):0; }
 
 function onDrop(e){
   e.preventDefault();
@@ -97,7 +99,7 @@ function onFile(file){
   reader.onload=function(e){
     try{
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
-      log('Pestañas encontradas: '+wb.SheetNames.join(', '));
+      log('Pestañas: '+wb.SheetNames.join(' | '));
       var resumen=parseResumen(wb);
       var modulo=parseModulo(wb);
       var dormis=parseDormis(wb);
@@ -110,167 +112,196 @@ function onFile(file){
         +Object.keys(modulo).length+' cursos'
         +(dormis?' · '+dormis.totalAlumnos+' dormis':'');
       document.getElementById('pubBtn').disabled=false;
-      showStatus('Archivo procesado correctamente. Revisá el log y hacé clic en "Procesar y publicar".','ok');
+      showStatus('Archivo procesado. Revisá el log y hacé clic en "Procesar y publicar".','ok');
     }catch(err){
       showStatus('❌ Error: '+err.message,'err');
-      log('ERROR: '+err.message);
+      log('ERROR: '+err.message+'\n'+err.stack);
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-function parsePct(val){
-  // El Excel puede guardar el porcentaje como decimal (0.73) o como entero (73)
-  var n=parseFloat(val)||0;
-  if(n>0&&n<=1) return Math.round(n*100);   // decimal → porcentaje
-  if(n>1&&n<=100) return Math.round(n);      // ya es porcentaje
-  return 0;
-}
-
+// ─────────────────────────────────────────────────────────────
+// RESUMEN TOTAL
+// Estructura real del Excel:
+//   Fila 4: col B = "  Módulo A", fila 11 = "  Módulo B"
+//   Filas 5-8: col B=num, col C=nombre curso, col D=n (Módulo A)
+//   Filas 12-15: ídem Módulo B
+//   Fila 3: col G="Alumnos Unicos" → fila 4: col G=229, H=70, I=159
+//   Fila 9: col G="Carrera" → filas 10+ tienen los datos
+//   Fila 18: col C="TOTAL GENERAL", col D=totalGeneral (fórmula, ignorar)
+//   Columna K (pct) tiene FÓRMULAS → calcular desde J/H
+// ─────────────────────────────────────────────────────────────
 function parseResumen(wb){
-  var sn=wb.SheetNames.find(function(n){return n.toLowerCase().includes('resumen total')});
-  if(!sn){
-    // fallback: buscar pestaña que contenga "resumen" y no "módulo" ni "dormis"
-    sn=wb.SheetNames.find(function(n){return /resumen/i.test(n)&&!/m[oó]dulo/i.test(n)&&!/dormis/i.test(n)});
-  }
-  if(!sn)throw new Error('No se encontró pestaña "Resumen Total". Pestañas: '+wb.SheetNames.join(', '));
-  log('Resumen Total → pestaña: "'+sn+'"');
-  var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
+  var sn=wb.SheetNames.find(function(n){return /resumen total/i.test(n)});
+  if(!sn) sn=wb.SheetNames.find(function(n){return /resumen/i.test(n)&&!/módulo/i.test(n)&&!/dormis/i.test(n)&&!/nombres/i.test(n)});
+  if(!sn) throw new Error('No se encontró pestaña Resumen Total. Pestañas: '+wb.SheetNames.join(', '));
+  log('Resumen Total → "'+sn+'"');
+
+  var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
   var alumnosUnicos=0,unCurso=0,dosCursos=0,totalGeneral=0;
   var cursosA=[],cursosB=[],carreras=[];
-  var modulo=null;
+  var moduloActual=null;
 
   for(var i=0;i<rows.length;i++){
-    var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
+    var c=rows[i].map(clr);
 
-    // Módulo — buscarlo en cualquier columna de la fila
-    var rowStr=c.join('|').toLowerCase();
-    if(/m[oó]dulo\s*a/.test(rowStr)&&!/m[oó]dulo\s*b/.test(rowStr)){modulo='A';continue;}
-    if(/m[oó]dulo\s*b/.test(rowStr)&&!/m[oó]dulo\s*a/.test(rowStr)){modulo='B';continue;}
+    // ── Módulo A / B (col B, idx 1) ──
+    if(/^\s*m[oó]dulo\s*a\s*$/i.test(c[1])){ moduloActual='A'; continue; }
+    if(/^\s*m[oó]dulo\s*b\s*$/i.test(c[1])){ moduloActual='B'; continue; }
 
-    // Alumnos únicos — buscar el header en cualquier celda de la fila
-    var auIdx=c.findIndex(function(v){return /alumnos.{0,15}[uú]nicos/i.test(v)});
-    if(auIdx>=0&&i+1<rows.length){
-      var nr=rows[i+1].map(function(v){return String(v==null?'':v).trim()});
-      alumnosUnicos=parseInt(nr[auIdx])||0;
-      unCurso=parseInt(nr[auIdx+1])||0;
-      dosCursos=parseInt(nr[auIdx+2])||0;
-      log('Alumnos únicos='+alumnosUnicos+' | 1 curso='+unCurso+' | 2 cursos='+dosCursos);
+    // ── Alumnos únicos: header en col G (idx 6) ──
+    if(/alumnos\s+uni/i.test(c[6])){
+      if(i+1<rows.length){
+        var nr=rows[i+1].map(clr);
+        alumnosUnicos=parseInt(nr[6])||0;
+        unCurso=parseInt(nr[7])||0;
+        dosCursos=parseInt(nr[8])||0;
+        log('Alumnos únicos='+alumnosUnicos+' 1c='+unCurso+' 2c='+dosCursos);
+      }
     }
 
-    // Total general — buscar en cualquier celda
-    var tgIdx=c.findIndex(function(v){return /total\s+general/i.test(v)});
-    if(tgIdx>=0) totalGeneral=parseInt(c[tgIdx+1])||0;
+    // ── Total general: col C (idx 2) ──
+    if(/total\s+general/i.test(c[2])){
+      // col D puede ser fórmula; usar suma de cursosA+cursosB después
+      var raw=rows[i][3];
+      if(typeof raw === 'number') totalGeneral=raw;
+    }
 
-    // Cursos: nro en col B (idx 1), nombre en col C (idx 2), n en col D (idx 3)
-    if(modulo&&/^[1-9]$/.test(c[1])&&c[2]&&c[2].length>4){
-      var n=parseInt(c[3])||0;
+    // ── Cursos: col B = número 1-9, col C = nombre, col D = inscriptos ──
+    if(moduloActual && /^[1-9]$/.test(c[1]) && c[2] && c[2].length>3){
+      var n=typeof rows[i][3]==='number'?rows[i][3]:(parseInt(c[3])||0);
       if(n>0){
-        if(modulo==='A') cursosA.push({nombre:c[2],n:n});
+        if(moduloActual==='A') cursosA.push({nombre:c[2],n:n});
         else cursosB.push({nombre:c[2],n:n});
       }
     }
 
-    // Carreras: buscar header "Carrera" en cualquier columna
-    var carreraHdrIdx=c.findIndex(function(v){return v.toLowerCase()==='carrera'});
-    if(carreraHdrIdx>=0){
-      log('Header "Carrera" en fila '+i+', col '+carreraHdrIdx);
+    // ── Carreras: header en col G = "Carrera" ──
+    if(c[6]==='Carrera'){
+      log('Header Carrera en fila '+(i+1));
       for(var j=i+1;j<rows.length;j++){
-        var cr=rows[j].map(function(v){return String(v==null?'':v).trim()});
-        var nombre=cr[carreraHdrIdx];
-        if(!nombre||/^(carrera|global\s*connect|total)/i.test(nombre))continue;
-        var total=parseInt(cr[carreraHdrIdx+1])||0;
-        if(total>0){
-          var one=parseInt(cr[carreraHdrIdx+2])||0;
-          var two=parseInt(cr[carreraHdrIdx+3])||0;
-          var pctRaw=cr[carreraHdrIdx+4];
-          var pctFinal=parsePct(pctRaw);
-          log('  Carrera: "'+nombre+'" total='+total+' one='+one+' two='+two+' pctRaw='+pctRaw+' → '+pctFinal+'%');
-          carreras.push({carrera:nombre,total:total,one:one,two:two,pct:pctFinal});
-        }
+        var cr=rows[j];
+        var nombre=clr(cr[6]);
+        if(!nombre) continue;
+        if(/^(carrera|global|total)/i.test(nombre)) continue;
+        var total=typeof cr[7]==='number'?cr[7]:(parseInt(clr(cr[7]))||0);
+        if(total<=0) continue;
+        var one  =typeof cr[8]==='number'?cr[8]:(parseInt(clr(cr[8]))||0);
+        var two  =typeof cr[9]==='number'?cr[9]:(parseInt(clr(cr[9]))||0);
+        // col K (idx 10) puede ser fórmula string → calcular
+        var pctVal=pct(two,total);
+        log('  '+nombre+' t='+total+' 1c='+one+' 2c='+two+' pct='+pctVal+'%');
+        carreras.push({carrera:nombre,total:total,one:one,two:two,pct:pctVal});
       }
-      break;
+      break; // ya leímos todas
     }
   }
 
-  log('Carreras leídas: '+carreras.length+' | cursosA: '+cursosA.length+' | cursosB: '+cursosB.length);
+  // totalGeneral: si quedó 0 (fórmula), sumarlo
+  if(!totalGeneral) totalGeneral=cursosA.reduce(function(s,c){return s+c.n},0)+cursosB.reduce(function(s,c){return s+c.n},0);
+  log('Carreras='+carreras.length+' cursosA='+cursosA.length+' cursosB='+cursosB.length);
   return{alumnosUnicos:alumnosUnicos,unCurso:unCurso,dosCursos:dosCursos,totalGeneral:totalGeneral,cursosA:cursosA,cursosB:cursosB,carreras:carreras};
 }
 
+// ─────────────────────────────────────────────────────────────
+// RESUMEN POR MÓDULO
+// Estructura real:
+//   Fila 3: col A = "Módulo A"
+//   Fila 4: col A = "Nombre Curso | Prof. Apellido Nombre"
+//   Fila 5: header (Prioridad, Apellido, Nombre, Email, Carrera)
+//   Filas 6+: alumnos, col A="1° Prioridad", B=apellido, C=nombre, D=email, E=carrera
+//   Siguiente módulo comienza con "Módulo B" en col A
+// ─────────────────────────────────────────────────────────────
 function parseModulo(wb){
-  var sn=wb.SheetNames.find(function(n){
-    return /resumen por m[oó]dulo/i.test(n)||(/m[oó]dulo/i.test(n)&&!/resumen dormis/i.test(n)&&!/resumen total/i.test(n));
-  });
-  if(!sn){log('Sin pestaña módulos');return{};}
-  log('Módulos → pestaña: "'+sn+'"');
-  var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
+  var sn=wb.SheetNames.find(function(n){return /resumen por m[oó]dulo/i.test(n)});
+  if(!sn){ log('Sin pestaña módulos'); return {}; }
+  log('Módulos → "'+sn+'"');
+  var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
   var cursos={},cursoActual=null,modActual=null;
 
   for(var i=0;i<rows.length;i++){
-    var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
-    if(!c.join('').trim())continue;
+    var c=rows[i].map(clr);
+    if(!c.join('').trim()) continue;
 
-    if(/^m[oó]dulo\s*a$/i.test(c[0])){modActual='A';continue}
-    if(/^m[oó]dulo\s*b$/i.test(c[0])){modActual='B';continue}
+    var a=c[0]; // col A
 
-    // Encabezado de curso: contiene | en col A
-    if(c[0].includes('|')&&!/prioridad/i.test(c[0])){
-      var parts=c[0].split('|');
+    // Módulo A / B
+    if(/^m[oó]dulo\s*a\s*$/i.test(a)){ modActual='A'; cursoActual=null; continue; }
+    if(/^m[oó]dulo\s*b\s*$/i.test(a)){ modActual='B'; cursoActual=null; continue; }
+
+    // Encabezado de curso: tiene "|" y NO empieza con "1°" ni "Prioridad"
+    if(a && a.indexOf('|')>=0 && !/^(1[°º]|Prioridad)/i.test(a)){
+      var parts=a.split('|');
       cursoActual=parts[0].trim();
       var prof=parts[1]?parts[1].trim():'';
       cursos[cursoActual]={modulo:modActual,profesor:prof,alumnos:[]};
       continue;
     }
 
-    // Alumno: col A empieza con "1°" o "1º"
-    if(/^1[°º]/.test(c[0])&&cursoActual&&cursos[cursoActual]){
-      cursos[cursoActual].alumnos.push({apellido:c[1],nombre:c[2],email:c[3],carrera:c[4]});
+    // Fila de alumno: col A empieza con "1°" o "1º"
+    if(/^1[°º]/i.test(a) && cursoActual && cursos[cursoActual]){
+      cursos[cursoActual].alumnos.push({
+        apellido:c[1], nombre:c[2], email:c[3], carrera:c[4]
+      });
     }
   }
-  log('Cursos cargados: '+Object.keys(cursos).join(', '));
+  log('Cursos: '+Object.keys(cursos).join(', '));
   return cursos;
 }
 
+// ─────────────────────────────────────────────────────────────
+// DORMIS
+// ─────────────────────────────────────────────────────────────
 function parseDormis(wb){
   var snR=wb.SheetNames.find(function(n){return /resumen dormis/i.test(n)});
   var snN=wb.SheetNames.find(function(n){return /con nombres/i.test(n)});
-  if(!snR&&!snN){log('Sin pestañas dormis');return null;}
-  log('Dormis → resumen:"'+(snR||'—')+'" nombres:"'+(snN||'—')+'"');
+  if(!snR&&!snN){ log('Sin pestañas dormis'); return null; }
+  log('Dormis resumen="'+(snR||'—')+'" nombres="'+(snN||'—')+'"');
 
   var baseSimple=0,baseDoble=0,totalRes=0,totalAlum=0;
   var bloques=[],carrerasDormis=[],alumnos=[];
 
   if(snR){
-    var rows=XLSX.utils.sheet_to_json(wb.Sheets[snR],{header:1,defval:''});
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[snR],{header:1,defval:null,raw:true});
     var hf=false;
     for(var i=0;i<rows.length;i++){
-      var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
-      if(/^bloque$/i.test(c[0])){hf=true;continue}
+      var c=rows[i].map(clr);
+      if(/^bloque$/i.test(c[0])){ hf=true; continue; }
       if(hf&&/^total$/i.test(c[0])){
-        baseSimple=parseInt(c[1])||0;baseDoble=parseInt(c[2])||0;
-        totalRes=parseInt(c[3])||0;totalAlum=parseInt(c[4])||0;
+        baseSimple=typeof rows[i][1]==='number'?rows[i][1]:(parseInt(c[1])||0);
+        baseDoble =typeof rows[i][2]==='number'?rows[i][2]:(parseInt(c[2])||0);
+        totalRes  =typeof rows[i][3]==='number'?rows[i][3]:(parseInt(c[3])||0);
+        totalAlum =typeof rows[i][4]==='number'?rows[i][4]:(parseInt(c[4])||0);
         continue;
       }
-      if(hf&&c[0]&&c[0].length>3&&!/^total$/i.test(c[0])){
-        var bs=parseInt(c[1])||0,bd=parseInt(c[2])||0;
-        if(bs+bd>0)bloques.push({bloque:c[0],simple:bs,doble:bd,reservas:parseInt(c[3])||0,alumnos:parseInt(c[4])||0});
+      if(hf&&c[0]&&c[0].length>2&&!/^total$/i.test(c[0])){
+        var bs=typeof rows[i][1]==='number'?rows[i][1]:(parseInt(c[1])||0);
+        var bd=typeof rows[i][2]==='number'?rows[i][2]:(parseInt(c[2])||0);
+        if(bs+bd>0) bloques.push({
+          bloque:c[0],simple:bs,doble:bd,
+          reservas:typeof rows[i][3]==='number'?rows[i][3]:(parseInt(c[3])||0),
+          alumnos:typeof rows[i][4]==='number'?rows[i][4]:(parseInt(c[4])||0)
+        });
       }
-      // Carreras en columnas H+ (idx 7+)
-      if(c[7]&&c[7].length>3&&!/^(carrera|global|total)/i.test(c[7])){
-        var cant=parseInt(c[8])||0;
-        var pctDormis=parsePct(c[9]);
-        if(cant>0)carrerasDormis.push({carrera:c[7],cant:cant,pct:pctDormis});
+      // Carreras dormis en col H+ (idx 7)
+      var cNombre=clr(rows[i][7]);
+      if(cNombre&&cNombre.length>3&&!/^(carrera|global|total)/i.test(cNombre)){
+        var cant=typeof rows[i][8]==='number'?rows[i][8]:(parseInt(clr(rows[i][8]))||0);
+        var cantTotal=totalAlum||27; // fallback
+        var pctD=pct(cant,cantTotal);
+        if(cant>0) carrerasDormis.push({carrera:cNombre,cant:cant,pct:pctD});
       }
     }
   }
 
   if(snN){
-    var rows2=XLSX.utils.sheet_to_json(wb.Sheets[snN],{header:1,defval:''});
+    var rows2=XLSX.utils.sheet_to_json(wb.Sheets[snN],{header:1,defval:null,raw:true});
     var hf2=false;
     for(var j=0;j<rows2.length;j++){
-      var c2=rows2[j].map(function(v){return String(v==null?'':v).replace(/\n/g,' ').trim()});
-      if(/^apellido/i.test(c2[0])){hf2=true;continue}
-      if(!hf2||!c2[0]||/^total/i.test(c2[0]))continue;
+      var c2=rows2[j].map(clr);
+      if(/^apellido/i.test(c2[0])){ hf2=true; continue; }
+      if(!hf2||!c2[0]||/^total/i.test(c2[0])) continue;
       alumnos.push({nombre:c2[0],email:c2[1],bloque:c2[2],tipo:c2[3],acompanante:c2[4]||'',observaciones:c2[5]||''});
     }
     log('Alumnos dormis: '+alumnos.length);
@@ -281,8 +312,8 @@ function parseDormis(wb){
 
 async function publicar(){
   var token=document.getElementById('token').value.trim();
-  if(!token){showStatus('⚠️ Ingresá tu GitHub Token primero.','err');return}
-  if(!parsed){showStatus('⚠️ Primero subí el Excel.','err');return}
+  if(!token){ showStatus('⚠️ Ingresá tu GitHub Token primero.','err'); return; }
+  if(!parsed){ showStatus('⚠️ Primero subí el Excel.','err'); return; }
 
   document.getElementById('pubBtn').disabled=true;
   showStatus('<span class="spin"></span> Publicando en GitHub...','loading');
@@ -293,14 +324,14 @@ async function publicar(){
     var sha=null;
     try{
       var r=await fetch(url,{headers:{Authorization:'token '+token}});
-      if(r.ok){var dd=await r.json();sha=dd.sha;}
+      if(r.ok){ var dd=await r.json(); sha=dd.sha; }
     }catch(e){}
 
     var body={message:'Actualización datos '+parsed.fecha,content:content};
-    if(sha)body.sha=sha;
+    if(sha) body.sha=sha;
 
     var res=await fetch(url,{method:'PUT',headers:{Authorization:'token '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok){var er=await res.json();throw new Error(er.message||res.statusText)}
+    if(!res.ok){ var er=await res.json(); throw new Error(er.message||res.statusText); }
 
     showStatus('✅ Dashboard actualizado con datos del <strong>'+parsed.fecha+'</strong>.<br>'
       +'Visible en 1-2 min en: <a href="https://'+OWNER+'.github.io/'+REPO+'/" target="_blank" style="color:#065F46">https://'+OWNER+'.github.io/'+REPO+'/</a>','ok');

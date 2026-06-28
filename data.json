@@ -3,7 +3,7 @@
     "alumnosUnicos": 229,
     "unCurso": 70,
     "dosCursos": 159,
-    "totalGeneral": 386,
+    "totalGeneral": 0,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -22,25 +22,128 @@
         "n": 60
       }
     ],
-    "cursosB": [
+    "cursosB": [],
+    "carreras": [
       {
-        "nombre": "Reestructuración Financiera",
-        "n": 38
+        "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO",
+        "total": 37,
+        "one": 10,
+        "two": 27,
+        "pct": 73
       },
       {
-        "nombre": "Problemas Malditos e Innovación",
-        "n": 38
+        "carrera": "Master in Management",
+        "total": 38,
+        "one": 12,
+        "two": 26,
+        "pct": 68
       },
       {
-        "nombre": "Neurociencias y Liderazgo",
-        "n": 72
+        "carrera": "Maestría en Negocios Tecnológicos",
+        "total": 28,
+        "one": 2,
+        "two": 26,
+        "pct": 93
       },
       {
-        "nombre": "Decisiones y Crecimiento",
-        "n": 48
+        "carrera": "Maestría en Finanzas",
+        "total": 17,
+        "one": 4,
+        "two": 13,
+        "pct": 76
+      },
+      {
+        "carrera": "Maestria en Finanzas (Modalidad a distancia)",
+        "total": 13,
+        "one": 5,
+        "two": 8,
+        "pct": 62
+      },
+      {
+        "carrera": "Maestría en Negocios Digitales",
+        "total": 17,
+        "one": 8,
+        "two": 9,
+        "pct": 53
+      },
+      {
+        "carrera": "Graduado",
+        "total": 13,
+        "one": 7,
+        "two": 6,
+        "pct": 46
+      },
+      {
+        "carrera": "Maestría en Administración de Negocios de Salud",
+        "total": 8,
+        "one": 1,
+        "two": 7,
+        "pct": 88
+      },
+      {
+        "carrera": "Maestría en Gestión y Dirección de Recursos Humanos",
+        "total": 10,
+        "one": 5,
+        "two": 5,
+        "pct": 50
+      },
+      {
+        "carrera": "Maestría en Marketing y Comunicación",
+        "total": 14,
+        "one": 5,
+        "two": 9,
+        "pct": 64
+      },
+      {
+        "carrera": "Maestría en Administración de Negocios",
+        "total": 12,
+        "one": 5,
+        "two": 7,
+        "pct": 58
+      },
+      {
+        "carrera": "Maestria en Marketing y Comunicacion (Modalidad a distancia)",
+        "total": 6,
+        "one": 2,
+        "two": 4,
+        "pct": 67
+      },
+      {
+        "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)",
+        "total": 7,
+        "one": 2,
+        "two": 5,
+        "pct": 71
+      },
+      {
+        "carrera": "Externo",
+        "total": 4,
+        "one": 1,
+        "two": 3,
+        "pct": 75
+      },
+      {
+        "carrera": "Maestría en Administración de Negocios - MBA Regional",
+        "total": 2,
+        "one": 0,
+        "two": 2,
+        "pct": 100
+      },
+      {
+        "carrera": "Maestría en Gobierno Corporativo Orientado a Finanzas y Derecho",
+        "total": 1,
+        "one": 1,
+        "two": 0,
+        "pct": 0
+      },
+      {
+        "carrera": "Doctorado en Administración de Negocios",
+        "total": 2,
+        "one": 0,
+        "two": 2,
+        "pct": 100
       }
-    ],
-    "carreras": []
+    ]
   },
   "modulo": {
     "Repensando el Proceso de Innovación en la era de la IA Generativa": {
