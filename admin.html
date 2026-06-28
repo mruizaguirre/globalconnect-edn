@@ -115,8 +115,8 @@ function parseResumen(wb){
     var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
 
     // Módulo — está en col B (idx 1)
-    if(/^m[oó]dulo\s*a$/i.test(c[1]))modulo='A';
-    else if(/^m[oó]dulo\s*b$/i.test(c[1]))modulo='B';
+    if(/^m[oó]dulo\s*a$/i.test(c[1])){modulo='A';continue;}
+    if(/^m[oó]dulo\s*b$/i.test(c[1])){modulo='B';continue;}
 
     // Alumnos únicos — header en col G (idx 6), valores en fila siguiente
     if(/alumnos.{0,15}[uú]nicos/i.test(c[6])){
@@ -162,7 +162,7 @@ function parseResumen(wb){
 }
 
 function parseModulo(wb){
-  var sn=wb.SheetNames.find(function(n){return /m[oó]dulo|por m/i.test(n)&&!/resumen/i.test(n)});
+  var sn=wb.SheetNames.find(function(n){return /resumen por m[oó]dulo/i.test(n)||(/m[oó]dulo/i.test(n)&&!/resumen dormis/i.test(n)&&!/resumen total/i.test(n))});
   if(!sn)return{};
   var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
   var cursos={},cursoActual=null,modActual=null;
