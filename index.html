@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Global Connect 2026 — EDN</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root { --navy:#0A2540; --gold:#F2C94C; --bg:#F8F9FA; --border:#E9ECEF; --muted:#6C757D; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -14,10 +13,6 @@
   .header h1 { color:#fff; font-size:20px; font-weight:700; }
   .header p { color:var(--gold); font-size:13px; margin-top:4px; }
   .date-badge { background:rgba(242,201,76,.2); border:1px solid rgba(242,201,76,.5); color:var(--gold); font-size:12px; font-weight:600; padding:6px 14px; border-radius:8px; }
-  .no-data { text-align:center; padding:80px 24px; }
-  .no-data .icon { font-size:64px; margin-bottom:16px; }
-  .no-data h2 { font-size:18px; color:var(--navy); margin-bottom:8px; }
-  .no-data p { color:var(--muted); font-size:13px; }
   .tab-nav { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:20px; }
   .tab-btn { background:#fff; border:1px solid var(--border); color:#495057; font-size:12px; font-weight:600; padding:8px 14px; border-radius:8px; cursor:pointer; white-space:nowrap; transition:all .15s; }
   .tab-btn:hover { background:#E9ECEF; }
@@ -25,6 +20,7 @@
   .tab-panel { display:none; }
   .tab-panel.active { display:block; }
   .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .kpi-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
   .kpi-card { background:var(--navy); border-radius:12px; padding:20px 22px; border-top:4px solid var(--gold); }
   .kpi-label { color:rgba(255,255,255,.6); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
   .kpi-value { color:#fff; font-size:34px; font-weight:700; line-height:1; }
@@ -67,10 +63,31 @@
   .insight-label { font-size:11px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
   .insight-value { font-size:13px; font-weight:600; }
   .insight-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+
+  .download-bar { display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px; }
+  .dl-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
+  .dl-btn-pdf { background:var(--navy); color:var(--gold); }
+  .dl-btn-pdf:hover { background:#185FA5; }
+  .dl-btn-html { background:#fff; color:var(--navy); border:1px solid var(--border); }
+  .dl-btn-html:hover { background:#F0F2F5; }
+
   .footer { text-align:center; color:#ADB5BD; font-size:11px; margin-top:32px; padding-top:20px; border-top:1px solid var(--border); }
   .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--navy); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 12px; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  @media(max-width:768px) { .kpi-grid{grid-template-columns:repeat(2,1fr)} .charts-row{grid-template-columns:1fr} .insights-grid{grid-template-columns:1fr} }
+
+  @media print {
+    body { background:#fff; }
+    .tab-nav { display:none !important; }
+    .tab-panel { display:block !important; page-break-before:auto; }
+    .download-bar { display:none !important; }
+    .header { border-radius:0; }
+    .card { break-inside:avoid; margin-bottom:12px; }
+    .kpi-grid { break-inside:avoid; }
+    .charts-row { grid-template-columns:1fr 1fr; }
+    @page { margin:1.5cm; size:A4 landscape; }
+  }
+
+  @media(max-width:768px) { .kpi-grid{grid-template-columns:repeat(2,1fr)} .kpi-grid-3{grid-template-columns:repeat(2,1fr)} .charts-row{grid-template-columns:1fr} .insights-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -86,134 +103,248 @@
     <p>Escuela de Negocios de San Andrés (EDN) · Global Connect 2026 · Confidencial — uso interno</p>
   </div>
 </div>
+
 <script>
-// Carga automática desde data.json en el mismo repo
+
+function descargarHTML() {
+  var html = document.documentElement.outerHTML;
+  var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var fecha = document.getElementById('date-badge').textContent.replace('📅 Corte: ','').replace(/\s/g,'_') || 'reporte';
+  a.href = url;
+  a.download = 'GlobalConnect_2026_' + fecha + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 async function cargarDatos() {
   try {
     const r = await fetch('data.json?t=' + Date.now());
     if (!r.ok) throw new Error('Sin datos');
     const d = await r.json();
-    renderDashboard(d.resumen, d.modulo, d.fecha);
+    renderDashboard(d.resumen, d.modulo, d.fecha, d.dormis || null);
   } catch(e) {
     document.getElementById('date-badge').textContent = '📅 Sin datos cargados';
-    document.getElementById('contenido').innerHTML = `
-      <div class="card no-data">
-        <div class="icon">📊</div>
-        <h2>Dashboard en espera</h2>
-        <p>Los datos se actualizan diariamente.<br>Si ves este mensaje, el administrador aún no cargó los datos de hoy.</p>
-      </div>`;
+    document.getElementById('contenido').innerHTML =
+      '<div class="card" style="text-align:center;padding:60px"><div style="font-size:48px;margin-bottom:16px">📊</div><h2 style="color:var(--navy);margin-bottom:8px">Dashboard en espera</h2><p style="color:var(--muted);font-size:13px">Los datos se actualizan diariamente.</p></div>';
   }
 }
 
-function renderDashboard(data, modData, fecha) {
+function renderDashboard(data, modData, fecha, dormisData) {
   document.getElementById('date-badge').textContent = '📅 Corte: ' + fecha;
-  const pctDos = data.alumnosUnicos>0 ? Math.round(data.dosCursos/data.alumnosUnicos*100) : 0;
-  const pctUno = 100-pctDos;
-  const subtA = data.cursosA.reduce((s,c)=>s+c.n,0);
-  const subtB = data.cursosB.reduce((s,c)=>s+c.n,0);
-  const todosCursos = [...data.cursosA.map(c=>({...c,mod:'A'})),...data.cursosB.map(c=>({...c,mod:'B'}))].sort((a,b)=>b.n-a.n);
-  const maxN = todosCursos[0]?.n||1;
-  const maxC = data.carreras[0]?.total||1;
-  const topA = [...data.cursosA].sort((a,b)=>b.n-a.n)[0]||{};
-  const topB = [...data.cursosB].sort((a,b)=>b.n-a.n)[0]||{};
-  const topC = data.carreras[0]||{};
 
-  const cursoKeys = Object.keys(modData);
-  let tabBtns = `<button class="tab-btn active" onclick="showTab('resumen',this)">📊 Resumen</button>`;
-  cursoKeys.forEach((nombre,i)=>{
-    const info=modData[nombre];
-    const short=nombre.length>20?nombre.substring(0,20)+'…':nombre;
-    tabBtns+=`<button class="tab-btn" onclick="showTab('curso-${i}',this)">${info.modulo} · ${short}</button>`;
+  var pctDos = data.alumnosUnicos > 0 ? Math.round(data.dosCursos / data.alumnosUnicos * 100) : 0;
+  var pctUno = 100 - pctDos;
+  var subtA = data.cursosA.reduce(function(s,c){ return s+c.n; }, 0);
+  var subtB = data.cursosB.reduce(function(s,c){ return s+c.n; }, 0);
+  var todosCursos = data.cursosA.map(function(c){ return Object.assign({},c,{mod:'A'}); })
+    .concat(data.cursosB.map(function(c){ return Object.assign({},c,{mod:'B'}); }))
+    .sort(function(a,b){ return b.n-a.n; });
+  var maxN = todosCursos.length ? todosCursos[0].n : 1;
+  var maxC = data.carreras.length ? data.carreras[0].total : 1;
+  var topA = data.cursosA.slice().sort(function(a,b){return b.n-a.n;})[0] || {};
+  var topB = data.cursosB.slice().sort(function(a,b){return b.n-a.n;})[0] || {};
+  var topC = data.carreras[0] || {};
+
+  // TAB BUTTONS
+  var tabBtns = '<button class="tab-btn active" onclick="showTab(\'resumen\',this)">📊 Resumen</button>';
+  var cursoKeys = Object.keys(modData);
+  cursoKeys.forEach(function(nombre, i) {
+    var info = modData[nombre];
+    var short = nombre.length > 20 ? nombre.substring(0,20)+'…' : nombre;
+    tabBtns += '<button class="tab-btn" onclick="showTab(\'curso-'+i+'\',this)">'+info.modulo+' · '+short+'</button>';
   });
+  if (dormisData) {
+    tabBtns += '<button class="tab-btn" onclick="showTab(\'dormis\',this)">🏨 Dormis</button>';
+  }
 
-  let barsCursos = todosCursos.map(c=>{
-    const pct=Math.round(c.n/maxN*100);
-    const color=c.mod==='A'?'#0A2540':'#EF9F27';
-    const tc=c.mod==='A'?'#F2C94C':'#412402';
-    const mc=c.mod==='A'?'mod-a':'mod-b';
-    return `<div class="bar-row"><div class="bar-label" title="${c.nombre}">${c.nombre.length>26?c.nombre.substring(0,26)+'…':c.nombre}</div>
-      <span class="mod-badge ${mc}">Mód. ${c.mod}</span>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${color};"><span class="bar-num" style="color:${tc}">${c.n}</span></div></div></div>`;
-  }).join('')+`<div style="margin-top:14px;padding-top:12px;border-top:1px solid #F0F2F5;display:flex;gap:20px;font-size:12px;color:#6C757D;">
-    <span>📘 Subtotal Módulo A: <strong style="color:#0A2540">${subtA}</strong></span>
-    <span>📙 Subtotal Módulo B: <strong style="color:#BA7517">${subtB}</strong></span></div>`;
+  // BARRAS CURSOS
+  var barsCursos = todosCursos.map(function(c) {
+    var pct = Math.round(c.n / maxN * 100);
+    var color = c.mod === 'A' ? '#0A2540' : '#EF9F27';
+    var tc = c.mod === 'A' ? '#F2C94C' : '#412402';
+    var mc = c.mod === 'A' ? 'mod-a' : 'mod-b';
+    var lbl = c.nombre.length > 26 ? c.nombre.substring(0,26)+'…' : c.nombre;
+    return '<div class="bar-row"><div class="bar-label" title="'+c.nombre+'">'+lbl+'</div>'
+      +'<span class="mod-badge '+mc+'">Mód. '+c.mod+'</span>'
+      +'<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+color+';">'
+      +'<span class="bar-num" style="color:'+tc+'">'+c.n+'</span></div></div></div>';
+  }).join('');
+  barsCursos += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #F0F2F5;display:flex;gap:20px;font-size:12px;color:#6C757D;">'
+    +'<span>📘 Subtotal Módulo A: <strong style="color:#0A2540">'+subtA+'</strong></span>'
+    +'<span>📙 Subtotal Módulo B: <strong style="color:#BA7517">'+subtB+'</strong></span></div>';
 
-  let barsCarreras = data.carreras.map(c=>{
-    const pct=Math.round(c.total/maxC*100);
-    const color=pct>80?'#0A2540':pct>55?'#185FA5':pct>35?'#378ADD':pct>15?'#85B7EB':'#B5D4F4';
-    const tc=pct>50?'#fff':'#042C53';
-    return `<div class="bar-row"><div class="bar-label" title="${c.carrera}">${c.carrera.length>38?c.carrera.substring(0,38)+'…':c.carrera}</div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.max(pct,3)}%;background:${color};"><span class="bar-num" style="color:${tc}">${c.total}</span></div></div></div>`;
+  // BARRAS CARRERAS
+  var barsCarreras = data.carreras.map(function(c) {
+    var pct = Math.round(c.total / maxC * 100);
+    var color = pct>80?'#0A2540':pct>55?'#185FA5':pct>35?'#378ADD':pct>15?'#85B7EB':'#B5D4F4';
+    var tc = pct > 50 ? '#fff' : '#042C53';
+    var lbl = c.carrera.length > 38 ? c.carrera.substring(0,38)+'…' : c.carrera;
+    return '<div class="bar-row"><div class="bar-label" title="'+c.carrera+'">'+lbl+'</div>'
+      +'<div class="bar-wrap"><div class="bar-fill" style="width:'+Math.max(pct,3)+'%;background:'+color+';">'
+      +'<span class="bar-num" style="color:'+tc+'">'+c.total+'</span></div></div></div>';
   }).join('');
 
-  let tablaRows = data.carreras.map(c=>{
-    const tot=c.one+c.two; const pctD=tot>0?Math.round(c.two/tot*100):0;
-    return `<tr><td>${c.carrera}</td><td style="text-align:center;font-weight:700">${c.total}</td>
-      <td style="text-align:center">${c.one}</td><td style="text-align:center">${c.two}</td>
-      <td><div class="pct-bar"><div class="pct-track"><div class="pct-fill-bar" style="width:${pctD}%"></div></div>
-      <span style="font-size:11px;color:#0A2540;font-weight:600;white-space:nowrap">${Math.round(c.pct*100)||pctD}%</span></div></td></tr>`;
-  }).join('')+`<tr class="total-row"><td>TOTAL GENERAL</td><td style="text-align:center">${data.alumnosUnicos}</td>
-    <td style="text-align:center">${data.unCurso}</td><td style="text-align:center">${data.dosCursos}</td>
-    <td style="color:#F2C94C">${pctDos}% doble inscripción</td></tr>`;
+  // TABLA CARRERAS
+  var tablaRows = data.carreras.map(function(c) {
+    var tot = c.one + c.two;
+    var pctD = tot > 0 ? Math.round(c.two / tot * 100) : 0;
+    var pctShow = c.pct ? Math.round(c.pct*100)+'%' : pctD+'%';
+    return '<tr><td>'+c.carrera+'</td>'
+      +'<td style="text-align:center;font-weight:700">'+c.total+'</td>'
+      +'<td style="text-align:center">'+c.one+'</td>'
+      +'<td style="text-align:center">'+c.two+'</td>'
+      +'<td><div class="pct-bar"><div class="pct-track"><div class="pct-fill-bar" style="width:'+pctD+'%"></div></div>'
+      +'<span style="font-size:11px;color:#0A2540;font-weight:600;white-space:nowrap">'+pctShow+'</span></div></td></tr>';
+  }).join('');
+  tablaRows += '<tr class="total-row"><td>TOTAL GENERAL</td>'
+    +'<td style="text-align:center">'+data.alumnosUnicos+'</td>'
+    +'<td style="text-align:center">'+data.unCurso+'</td>'
+    +'<td style="text-align:center">'+data.dosCursos+'</td>'
+    +'<td style="color:#F2C94C">'+pctDos+'% doble inscripción</td></tr>';
 
-  let paneles = cursoKeys.map((nombre,i)=>{
-    const info=modData[nombre];
-    const mc=info.modulo==='A'?'mod-a':'mod-b';
-    const filas=info.alumnos.map((a,idx)=>`<tr>
-      <td style="color:#ADB5BD;font-size:11px;width:32px">${idx+1}</td>
-      <td>${a.apellido}</td><td>${a.nombre}</td><td>${a.carrera}</td>
-      <td style="color:#6C757D">${a.email}</td></tr>`).join('');
-    return `<div id="curso-${i}" class="tab-panel">
-      <div class="curso-header ${mc}"><h2>${nombre}</h2><p>Módulo ${info.modulo} · ${info.profesor||''}</p>
-        <span class="count-badge">${info.alumnos.length} inscriptos</span></div>
-      <div class="card">
-        <input class="search-box" type="text" placeholder="🔍 Buscar por apellido, nombre o carrera..." oninput="filtrar(this,'t${i}')">
-        <div class="table-wrap"><table id="t${i}">
-          <thead><tr><th>#</th><th>Apellido</th><th>Nombre</th><th>Carrera</th><th>Email</th></tr></thead>
-          <tbody>${filas}</tbody></table></div></div></div>`;
+  // PANELES CURSOS
+  var paneles = cursoKeys.map(function(nombre, i) {
+    var info = modData[nombre];
+    var mc = info.modulo === 'A' ? 'mod-a' : 'mod-b';
+    var filas = info.alumnos.map(function(a, idx) {
+      return '<tr><td style="color:#ADB5BD;font-size:11px;width:32px">'+(idx+1)+'</td>'
+        +'<td>'+a.apellido+'</td><td>'+a.nombre+'</td>'
+        +'<td>'+a.carrera+'</td><td style="color:#6C757D">'+a.email+'</td></tr>';
+    }).join('');
+    return '<div id="curso-'+i+'" class="tab-panel">'
+      +'<div class="curso-header '+mc+'"><h2>'+nombre+'</h2>'
+      +'<p>Módulo '+info.modulo+(info.profesor ? ' · '+info.profesor : '')+'</p>'
+      +'<span class="count-badge">'+info.alumnos.length+' inscriptos</span></div>'
+      +'<div class="card">'
+      +'<input class="search-box" type="text" placeholder="🔍 Buscar por apellido, nombre o carrera..." oninput="filtrar(this,\'t'+i+'\')">'
+      +'<div class="table-wrap"><table id="t'+i+'">'
+      +'<thead><tr><th>#</th><th>Apellido</th><th>Nombre</th><th>Carrera</th><th>Email</th></tr></thead>'
+      +'<tbody>'+filas+'</tbody></table></div></div></div>';
   }).join('');
 
-  document.getElementById('contenido').innerHTML = `
-    <div class="tab-nav">${tabBtns}</div>
-    <div id="resumen" class="tab-panel active">
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-label">Alumnos Únicos</div><div class="kpi-value">${data.alumnosUnicos}</div><div class="kpi-detail">Total inscriptos</div></div>
-        <div class="kpi-card"><div class="kpi-label">Inscripciones Totales</div><div class="kpi-value">${data.totalGeneral}</div><div class="kpi-detail">1° Prioridad (Mód. A + B)</div></div>
-        <div class="kpi-card"><div class="kpi-label">Toman 2 Cursos</div><div class="kpi-value">${data.dosCursos}</div><div class="kpi-detail">${pctDos}% del padrón</div></div>
-        <div class="kpi-card"><div class="kpi-label">Toman 1 Curso</div><div class="kpi-value">${data.unCurso}</div><div class="kpi-detail">${pctUno}% del padrón</div></div>
-      </div>
-      <div class="charts-row">
-        <div class="card"><div class="section-title">Demanda por Curso — 1° Prioridad</div>${barsCursos}</div>
-        <div class="card"><div class="section-title">Alumnos por Carrera</div>${barsCarreras}</div>
-      </div>
-      <div class="card" style="margin-bottom:20px">
-        <div class="section-title">Detalle de Carreras — Inscripciones y Perfil de Cursada</div>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Carrera</th><th style="text-align:center">Total</th><th style="text-align:center">1 Curso</th><th style="text-align:center">2 Cursos</th><th style="width:180px">% Doble inscripción</th></tr></thead>
-          <tbody>${tablaRows}</tbody></table></div>
-      </div>
-      <div class="card" style="border-left:4px solid #F2C94C;margin-bottom:20px">
-        <div class="section-title">Insights Clave del Período</div>
-        <div class="insights-grid">
-          <div class="insight-card"><div class="insight-label">🏆 Curso top Mód. A</div><div class="insight-value">${topA.nombre||'—'}</div><div class="insight-sub">${topA.n||'—'} inscriptos</div></div>
-          <div class="insight-card"><div class="insight-label">🏆 Curso top Mód. B</div><div class="insight-value">${topB.nombre||'—'}</div><div class="insight-sub">${topB.n||'—'} inscriptos</div></div>
-          <div class="insight-card"><div class="insight-label">📈 Carrera principal</div><div class="insight-value">${topC.carrera||'—'}</div><div class="insight-sub">${topC.total||'—'} alumnos</div></div>
-        </div>
-      </div>
-    </div>
-    ${paneles}`;
+  // PANEL DORMIS
+  var dormisPanelHtml = '';
+  if (dormisData) {
+    var d = dormisData;
+
+    // Filas de bloques
+    var blqRows = (d.bloques||[]).map(function(b) {
+      return '<tr><td>'+b.bloque+'</td>'
+        +'<td style="text-align:center;font-weight:700">'+b.simple+'</td>'
+        +'<td style="text-align:center;font-weight:700">'+b.doble+'</td>'
+        +'<td style="text-align:center;font-weight:700">'+b.reservas+'</td>'
+        +'<td style="text-align:center;font-weight:700">'+b.alumnos+'</td></tr>';
+    }).join('');
+
+    // Filas de carreras
+    var maxCant = d.carreras && d.carreras.length ? d.carreras[0].cant : 1;
+    var carrRows = (d.carreras||[]).map(function(c) {
+      var pct = Math.round(c.cant/maxCant*100);
+      return '<tr><td>'+c.carrera+'</td>'
+        +'<td style="text-align:center;font-weight:700">'+c.cant+'</td>'
+        +'<td><div class="pct-bar"><div class="pct-track"><div class="pct-fill-bar" style="width:'+pct+'%"></div></div>'
+        +'<span style="font-size:11px;color:#0A2540;font-weight:600">'+c.pct+'%</span></div></td></tr>';
+    }).join('');
+
+    // Filas de alumnos
+    var nomRows = (d.alumnos||[]).map(function(a, idx) {
+      var tipoBadge = /simple/i.test(a.tipo)
+        ? '<span style="background:#B5D4F4;color:#042C53;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600">Simple</span>'
+        : '<span style="background:#FAC775;color:#412402;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600">Doble</span>';
+      return '<tr>'
+        +'<td style="color:#ADB5BD;font-size:11px;width:28px">'+(idx+1)+'</td>'
+        +'<td>'+a.nombre+'</td>'
+        +'<td style="color:#6C757D">'+a.email+'</td>'
+        +'<td>'+a.bloque+'</td>'
+        +'<td>'+tipoBadge+'</td>'
+        +'<td style="color:#495057">'+a.acompanante+'</td>'
+        +'<td style="color:#6C757D;font-size:11px">'+a.observaciones+'</td>'
+        +'</tr>';
+    }).join('');
+
+    dormisPanelHtml = '<div id="dormis" class="tab-panel">'
+      // KPIs
+      +'<div class="kpi-grid-3">'
+      +'<div class="kpi-card"><div class="kpi-label">Base Simple</div><div class="kpi-value">'+d.baseSimple+'</div><div class="kpi-detail">reservas confirmadas</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Base Doble</div><div class="kpi-value">'+d.baseDoble+'</div><div class="kpi-detail">reservas confirmadas</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Total Alumnos</div><div class="kpi-value">'+d.totalAlumnos+'</div><div class="kpi-detail">'+d.totalReservas+' reservas en total</div></div>'
+      +'</div>'
+      // Tabla bloques
+      +'<div class="charts-row">'
+      +'<div class="card"><div class="section-title">Reservas por Bloque</div>'
+      +'<div class="table-wrap"><table>'
+      +'<thead><tr><th>Bloque</th><th style="text-align:center">Simple</th><th style="text-align:center">Doble</th><th style="text-align:center">Reservas</th><th style="text-align:center">Alumnos</th></tr></thead>'
+      +'<tbody>'+blqRows
+      +'<tr class="total-row"><td>TOTAL</td>'
+      +'<td style="text-align:center">'+d.baseSimple+'</td>'
+      +'<td style="text-align:center">'+d.baseDoble+'</td>'
+      +'<td style="text-align:center">'+d.totalReservas+'</td>'
+      +'<td style="text-align:center">'+d.totalAlumnos+'</td>'
+      +'</tr></tbody></table></div></div>'
+      // Tabla carreras
+      +'<div class="card"><div class="section-title">Alumnos por Carrera</div>'
+      +'<div class="table-wrap"><table>'
+      +'<thead><tr><th>Carrera</th><th style="text-align:center">Cant.</th><th style="width:140px">Proporción</th></tr></thead>'
+      +'<tbody>'+carrRows+'</tbody></table></div></div>'
+      +'</div>'
+      // Listado nominal
+      +'<div class="card" style="margin-bottom:20px">'
+      +'<div class="section-title">Listado Nominal de Alumnos con Dormi</div>'
+      +'<input class="search-box" type="text" placeholder="🔍 Buscar por nombre, bloque o carrera..." oninput="filtrar(this,'tdormis')">'
+      +'<div class="table-wrap"><table id="tdormis">'
+      +'<thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Bloque</th><th>Tipo</th><th>Acompañante</th><th>Observaciones</th></tr></thead>'
+      +'<tbody>'+nomRows+'</tbody></table></div></div>'
+      +'</div>';
+  }
+
+  // RENDER FINAL
+  document.getElementById('contenido').innerHTML =
+    '<div class="tab-nav">'+tabBtns+'</div>'
+    +'<div class="download-bar">'
+    +'<button class="dl-btn dl-btn-html" onclick="descargarHTML()">⬇️ Descargar HTML</button>'
+    +'<button class="dl-btn dl-btn-pdf" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>'
+    +'</div>'
+    +'<div id="resumen" class="tab-panel active">'
+    +'<div class="kpi-grid">'
+    +'<div class="kpi-card"><div class="kpi-label">Alumnos Únicos</div><div class="kpi-value">'+data.alumnosUnicos+'</div><div class="kpi-detail">Total inscriptos</div></div>'
+    +'<div class="kpi-card"><div class="kpi-label">Inscripciones Totales</div><div class="kpi-value">'+data.totalGeneral+'</div><div class="kpi-detail">1° Prioridad (Mód. A + B)</div></div>'
+    +'<div class="kpi-card"><div class="kpi-label">Toman 2 Cursos</div><div class="kpi-value">'+data.dosCursos+'</div><div class="kpi-detail">'+pctDos+'% del padrón</div></div>'
+    +'<div class="kpi-card"><div class="kpi-label">Toman 1 Curso</div><div class="kpi-value">'+data.unCurso+'</div><div class="kpi-detail">'+pctUno+'% del padrón</div></div>'
+    +'</div>'
+    +'<div class="charts-row">'
+    +'<div class="card"><div class="section-title">Demanda por Curso — 1° Prioridad</div>'+barsCursos+'</div>'
+    +'<div class="card"><div class="section-title">Alumnos por Carrera</div>'+barsCarreras+'</div>'
+    +'</div>'
+    +'<div class="card" style="margin-bottom:20px">'
+    +'<div class="section-title">Detalle de Carreras — Inscripciones y Perfil de Cursada</div>'
+    +'<div class="table-wrap"><table>'
+    +'<thead><tr><th>Carrera</th><th style="text-align:center">Total</th><th style="text-align:center">1 Curso</th><th style="text-align:center">2 Cursos</th><th style="width:180px">% Doble inscripción</th></tr></thead>'
+    +'<tbody>'+tablaRows+'</tbody></table></div></div>'
+    +'<div class="card" style="border-left:4px solid #F2C94C;margin-bottom:20px">'
+    +'<div class="section-title">Insights Clave del Período</div>'
+    +'<div class="insights-grid">'
+    +'<div class="insight-card"><div class="insight-label">🏆 Curso top Mód. A</div><div class="insight-value">'+(topA.nombre||'—')+'</div><div class="insight-sub">'+(topA.n||'—')+' inscriptos</div></div>'
+    +'<div class="insight-card"><div class="insight-label">🏆 Curso top Mód. B</div><div class="insight-value">'+(topB.nombre||'—')+'</div><div class="insight-sub">'+(topB.n||'—')+' inscriptos</div></div>'
+    +'<div class="insight-card"><div class="insight-label">📈 Carrera principal</div><div class="insight-value">'+(topC.carrera||'—')+'</div><div class="insight-sub">'+(topC.total||'—')+' alumnos</div></div>'
+    +'</div></div>'
+    +'</div>'
+    + paneles
+    + dormisPanelHtml;
 }
 
-function showTab(id,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  if(btn)btn.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
-function filtrar(input,tid){
-  const q=input.value.toLowerCase();
-  document.querySelectorAll('#'+tid+' tbody tr').forEach(tr=>{
-    tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+
+function filtrar(input, tid) {
+  var q = input.value.toLowerCase();
+  document.querySelectorAll('#'+tid+' tbody tr').forEach(function(tr){
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
 }
 

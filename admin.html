@@ -96,7 +96,7 @@ function handleFile(file) {
       const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
       const resumen = parseResumenTotal(wb);
       const modulo  = parseResumenModulo(wb);
-      parsedData = { resumen, modulo, fecha: fechaLegible };
+      parsedData = { resumen, modulo, dormis, fecha: fechaLegible };
 
       document.getElementById('file-info').style.display = 'block';
       document.getElementById('file-info').innerHTML =
@@ -236,6 +236,77 @@ function parseResumenModulo(wb) {
     }
   }
   return cursos;
+}
+
+
+// ── PARSER DORMIS ─────────────────────────────────────────
+function parseDormis(wb) {
+  // Pestaña 1: Resumen Dormis
+  const snRes = wb.SheetNames.find(n => /resumen dormis/i.test(n));
+  // Pestaña 2: Resumen con nombres
+  const snNom = wb.SheetNames.find(n => /con nombres/i.test(n));
+  if (!snRes && !snNom) return null;
+
+  let bloques = [], carreras = [], alumnos = [];
+  let baseSimple=0, baseDoble=0, totalReservas=0, totalAlumnos=0;
+
+  // --- Parsear Resumen Dormis ---
+  if (snRes) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[snRes], {header:1, defval:''});
+    let headerFound = false;
+    for (const row of rows) {
+      const c = row.map(v => String(v ?? '').trim());
+      // Header de tabla: col A = "Bloque"
+      if (/^bloque$/i.test(c[0])) { headerFound = true; continue; }
+      // Fila TOTAL
+      if (/^total$/i.test(c[0]) && headerFound) {
+        baseSimple    = parseInt(c[1]) || 0;
+        baseDoble     = parseInt(c[2]) || 0;
+        totalReservas = parseInt(c[3]) || 0;
+        totalAlumnos  = parseInt(c[4]) || 0;
+        continue;
+      }
+      // Filas de bloques
+      if (headerFound && c[0] && c[0].length > 3 && !/^total$/i.test(c[0])) {
+        bloques.push({
+          bloque:  c[0],
+          simple:  parseInt(c[1]) || 0,
+          doble:   parseInt(c[2]) || 0,
+          reservas:parseInt(c[3]) || 0,
+          alumnos: parseInt(c[4]) || 0,
+        });
+      }
+      // Carreras: col H (idx 7) = carrera, I = cant, J = pct
+      if (c[7] && c[7].length > 3 && !/^(carrera|global|total)/i.test(c[7])) {
+        const cant = parseInt(c[8]) || 0;
+        const pct  = parseFloat(c[9]) || 0;
+        if (cant > 0) carreras.push({ carrera: c[7], cant, pct: Math.round(pct) });
+      }
+    }
+  }
+
+  // --- Parsear Resumen con nombres ---
+  if (snNom) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[snNom], {header:1, defval:''});
+    let headerFound = false;
+    for (const row of rows) {
+      const c = row.map(v => String(v ?? '').replace(/\n/g,' ').trim());
+      if (/^apellido/i.test(c[0])) { headerFound = true; continue; }
+      if (!headerFound) continue;
+      if (!c[0] || /^total/i.test(c[0])) continue;
+      alumnos.push({
+        nombre:       c[0],
+        email:        c[1],
+        bloque:       c[2],
+        tipo:         c[3],
+        acompanante:  c[4],
+        observaciones:c[5],
+        carrera:      c[6]
+      });
+    }
+  }
+
+  return { baseSimple, baseDoble, totalReservas, totalAlumnos, bloques, carreras, alumnos };
 }
 
 // ── PUBLICAR EN GITHUB ────────────────────────────────────
