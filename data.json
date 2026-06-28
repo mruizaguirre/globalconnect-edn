@@ -3,7 +3,7 @@
     "alumnosUnicos": 229,
     "unCurso": 70,
     "dosCursos": 159,
-    "totalGeneral": 0,
+    "totalGeneral": 386,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -22,7 +22,24 @@
         "n": 60
       }
     ],
-    "cursosB": [],
+    "cursosB": [
+      {
+        "nombre": "Reestructuración Financiera",
+        "n": 38
+      },
+      {
+        "nombre": "Problemas Malditos e Innovación",
+        "n": 38
+      },
+      {
+        "nombre": "Neurociencias y Liderazgo",
+        "n": 72
+      },
+      {
+        "nombre": "Decisiones y Crecimiento",
+        "n": 48
+      }
+    ],
     "carreras": [
       {
         "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO",
@@ -2541,6 +2558,11 @@
     ],
     "carreras": [
       {
+        "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO",
+        "cant": 9,
+        "pct": 33
+      },
+      {
         "carrera": "Maestría en Finanzas (Modalidad a distancia)",
         "cant": 5,
         "pct": 19
@@ -2552,6 +2574,11 @@
       },
       {
         "carrera": "Maestría en Marketing y Comunicación (Modalidad a distancia)",
+        "cant": 3,
+        "pct": 11
+      },
+      {
+        "carrera": "Maestría en Marketing y Comunicación",
         "cant": 3,
         "pct": 11
       },
@@ -2575,7 +2602,7 @@
       {
         "nombre": "Alarcon Jose Pablo",
         "email": "jalarcon@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Finanzas (Modalidad a distancia)"
@@ -2583,7 +2610,7 @@
       {
         "nombre": "Alias Rocio",
         "email": "ralias@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Vallarino Lucía",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2591,7 +2618,7 @@
       {
         "nombre": "Asencio Cecilia Inés",
         "email": "casensio@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Finanzas (Modalidad a distancia)"
@@ -2599,7 +2626,7 @@
       {
         "nombre": "Barriocanal Emma",
         "email": "ebarriocanallemir@udesa.edu.ar",
-        "bloque": "Bloque 1\r (19-22/7)",
+        "bloque": "Bloque 1  (19-22/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2607,7 +2634,7 @@
       {
         "nombre": "Bauza Josefina",
         "email": "mbauza@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Maestría en Finanzas (Modalidad a distancia)"
@@ -2615,7 +2642,7 @@
       {
         "nombre": "Berrocal Candela Nahir",
         "email": "cberrocal@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Millan Beltrán Ana Fernanda",
         "observaciones": "Master in Management"
@@ -2623,7 +2650,7 @@
       {
         "nombre": "Cuellar Celia Jorgelina",
         "email": "ccuellar@udesa.edu.ar",
-        "bloque": "Bloque 2\r (22-25/7)",
+        "bloque": "Bloque 2  (22-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Davila Bettina Antonella",
         "observaciones": "Maestría en Gestión y Dirección de Recursos Humanos"
@@ -2631,7 +2658,7 @@
       {
         "nombre": "Cumbraos Camila",
         "email": "ccumbraos@udesa.edu.ar",
-        "bloque": "Bloque 2\r (22-25/7)",
+        "bloque": "Bloque 2  (22-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Marketing y Comunicación (Modalidad a distancia)"
@@ -2639,7 +2666,7 @@
       {
         "nombre": "Davila Bettina Antonella",
         "email": "bdavila@udesa.edu.ar",
-        "bloque": "Bloque 1\r (19-22/7)",
+        "bloque": "Bloque 1  (19-22/7)",
         "tipo": "Base Doble",
         "acompanante": "Cuellar Celia Jorgelina",
         "observaciones": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)"
@@ -2647,7 +2674,7 @@
       {
         "nombre": "Durán Maria Agostina",
         "email": "mduran@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Murphy Santiago",
         "observaciones": "Maestría en Marketing y Comunicación (Modalidad a distancia)"
@@ -2655,7 +2682,7 @@
       {
         "nombre": "Fazzari Camila Rocio",
         "email": "cfazzari@udesa.edu.ar",
-        "bloque": "Bloque 2\r (22-25/7)",
+        "bloque": "Bloque 2  (22-25/7)",
         "tipo": "Base Doble",
         "acompanante": "",
         "observaciones": "Maestría en Marketing y Comunicación"
@@ -2663,7 +2690,7 @@
       {
         "nombre": "Gramoy Federico",
         "email": "fgramoy@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2671,7 +2698,7 @@
       {
         "nombre": "Gutierrez Julián",
         "email": "gutierrezj@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Maestría en Finanzas (Modalidad a distancia)"
@@ -2679,7 +2706,7 @@
       {
         "nombre": "Lattanzi Natalio",
         "email": "nlattanzi@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Maestría en Negocios Digitales"
@@ -2687,7 +2714,7 @@
       {
         "nombre": "Mosconi Jorge David",
         "email": "jmosconi@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2695,7 +2722,7 @@
       {
         "nombre": "Millan Beltrán Ana Fernanda",
         "email": "amillanbeltran@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Berrocal Candela Nahir",
         "observaciones": "Master in Management"
@@ -2703,7 +2730,7 @@
       {
         "nombre": "Murphy Santiago",
         "email": "smurphy@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Durán Maria Agostina",
         "observaciones": "Maestría en Marketing y Comunicación (Modalidad a distancia)"
@@ -2711,7 +2738,7 @@
       {
         "nombre": "Novazzotti Pablo",
         "email": "pnavazzotti@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Master in Management"
@@ -2719,7 +2746,7 @@
       {
         "nombre": "Oteo Iván Gonzalo",
         "email": "ioteo@udesa.edu.ar",
-        "bloque": "Bloque 2\r (22-25/7)",
+        "bloque": "Bloque 2  (22-25/7)",
         "tipo": "Base Doble",
         "acompanante": "",
         "observaciones": "Maestría en Marketing y Comunicación"
@@ -2727,7 +2754,7 @@
       {
         "nombre": "Parada Valeria",
         "email": "vparada@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2735,7 +2762,7 @@
       {
         "nombre": "Portaluppi Diana Luis Santiago",
         "email": "lportaluppidiana@udesa.edu.ar",
-        "bloque": "Bloque 1\r (19-22/7)",
+        "bloque": "Bloque 1  (19-22/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2743,7 +2770,7 @@
       {
         "nombre": "Prietto Virginia",
         "email": "vprieto@udesa.edu.ar",
-        "bloque": "Bloque 2\r (22-25/7)",
+        "bloque": "Bloque 2  (22-25/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Marketing y Comunicación"
@@ -2751,7 +2778,7 @@
       {
         "nombre": "Salas Carolina",
         "email": "csalas@udesa.edu.ar",
-        "bloque": "Bloque 1\r (19-22/7)",
+        "bloque": "Bloque 1  (19-22/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2759,7 +2786,7 @@
       {
         "nombre": "Sclepek Mariana",
         "email": "msclepek@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Master in Management"
@@ -2767,7 +2794,7 @@
       {
         "nombre": "Vallarino Lucía",
         "email": "lvallarino@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Doble",
         "acompanante": "Alias Rocio",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
@@ -2775,7 +2802,7 @@
       {
         "nombre": "Villalba Guiñazú Nicolás",
         "email": "nvillalbaguinazu@udesa.edu.ar",
-        "bloque": "Bloques 1 y 2\r (19-25/7)",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
         "tipo": "Base Simple",
         "acompanante": "",
         "observaciones": "Maestría en Finanzas (Modalidad a distancia)"
@@ -2783,10 +2810,18 @@
       {
         "nombre": "Yaryes Hazael",
         "email": "hyaryes@udesa.edu.ar",
-        "bloque": "Bloque 1\r (19-22/7)",
+        "bloque": "Bloque 1  (19-22/7)",
         "tipo": "Base simple",
         "acompanante": "",
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
+      },
+      {
+        "nombre": "Total: 26 personas",
+        "email": "",
+        "bloque": "",
+        "tipo": "Simple: 17",
+        "acompanante": "Doble: 10",
+        "observaciones": ""
       }
     ]
   },
