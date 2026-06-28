@@ -123,7 +123,13 @@ async function cargarDatos() {
     const r = await fetch('data.json?t=' + Date.now());
     if (!r.ok) throw new Error('Sin datos');
     const d = await r.json();
-    renderDashboard(d.resumen, d.modulo || {}, d.fecha, (d && d.dormis) ? d.dormis : null);
+    try {
+      renderDashboard(d.resumen, d.modulo || {}, d.fecha, (d && d.dormis) ? d.dormis : null);
+    } catch(renderErr) {
+      document.getElementById('date-badge').textContent = '📅 Error al renderizar';
+      document.getElementById('contenido').innerHTML =
+        '<div class="card" style="border-left:4px solid #dc3545;padding:20px"><strong style="color:#dc3545">⚠️ Error al mostrar los datos</strong><br><span style="font-size:12px;color:#6C757D">' + renderErr.message + '</span></div>';
+    }
   } catch(e) {
     document.getElementById('date-badge').textContent = '📅 Sin datos cargados';
     document.getElementById('contenido').innerHTML =
@@ -292,7 +298,7 @@ function renderDashboard(data, modData, fecha, dormisData) {
       // Listado nominal
       +'<div class="card" style="margin-bottom:20px">'
       +'<div class="section-title">Listado Nominal de Alumnos con Dormi</div>'
-      +'<input class="search-box" type="text" placeholder="🔍 Buscar por nombre, bloque o carrera..." oninput="filtrar(this,'tdormis')">'
+      +'<input class="search-box" type="text" placeholder="🔍 Buscar por nombre, bloque o carrera..." oninput="filtrar(this,&quot;tdormis&quot;)">'
       +'<div class="table-wrap"><table id="tdormis">'
       +'<thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Bloque</th><th>Tipo</th><th>Acompañante</th><th>Observaciones</th></tr></thead>'
       +'<tbody>'+nomRows+'</tbody></table></div></div>'
