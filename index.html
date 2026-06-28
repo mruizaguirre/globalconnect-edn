@@ -123,7 +123,7 @@ async function cargarDatos() {
     const r = await fetch('data.json?t=' + Date.now());
     if (!r.ok) throw new Error('Sin datos');
     const d = await r.json();
-    renderDashboard(d.resumen, d.modulo, d.fecha, d.dormis || null);
+    renderDashboard(d.resumen, d.modulo || {}, d.fecha, (d && d.dormis) ? d.dormis : null);
   } catch(e) {
     document.getElementById('date-badge').textContent = '📅 Sin datos cargados';
     document.getElementById('contenido').innerHTML =
