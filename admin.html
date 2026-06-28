@@ -114,9 +114,9 @@ function parseResumen(wb){
   for(var i=0;i<rows.length;i++){
     var c=rows[i].map(function(v){return String(v==null?'':v).trim()});
 
-    // Módulo
-    if(c.some(function(x){return /^m[oó]dulo\s*a$/i.test(x)}))modulo='A';
-    else if(c.some(function(x){return /^m[oó]dulo\s*b$/i.test(x)}))modulo='B';
+    // Módulo — está en col B (idx 1)
+    if(/^m[oó]dulo\s*a$/i.test(c[1]))modulo='A';
+    else if(/^m[oó]dulo\s*b$/i.test(c[1]))modulo='B';
 
     // Alumnos únicos — header en col G (idx 6), valores en fila siguiente
     if(/alumnos.{0,15}[uú]nicos/i.test(c[6])){
