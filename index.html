@@ -156,8 +156,8 @@ function render(d){
     +'<span>📘 Subtotal Módulo A: <strong style="color:#0A2540">'+sA+'</strong></span>'
     +'<span>📙 Subtotal Módulo B: <strong style="color:#BA7517">'+sB+'</strong></span></div>';
 
-  // BARRAS CARRERAS
-  var bK=rs.carreras.map(function(c){
+  // BARRAS CARRERAS — ordenadas de mayor a menor
+  var bK=rs.carreras.slice().sort(function(a,b){return b.total-a.total}).map(function(c){
     var p=Math.round(c.total/mC*100);
     var col=p>80?'#0A2540':p>55?'#185FA5':p>35?'#378ADD':p>15?'#85B7EB':'#B5D4F4';
     var tc2=p>50?'#fff':'#042C53';
