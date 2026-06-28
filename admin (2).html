@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Global Connect 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Arial,sans-serif; background:#0A2540; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .box { background:#fff; border-radius:16px; padding:40px; max-width:520px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+  .logo { text-align:center; margin-bottom:28px; }
+  .logo h1 { color:#0A2540; font-size:18px; font-weight:700; margin-top:8px; }
+  .logo p { color:#6C757D; font-size:13px; margin-top:4px; }
+  .drop-zone { border:2px dashed #CBD0D8; border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:all .2s; margin-bottom:20px; }
+  .drop-zone:hover,.drop-zone.drag { border-color:#0A2540; background:#F0F4FA; }
+  .drop-zone .icon { font-size:40px; margin-bottom:10px; }
+  .drop-zone h3 { font-size:15px; color:#0A2540; margin-bottom:6px; }
+  .drop-zone p { font-size:12px; color:#6C757D; }
+  .btn { display:block; width:100%; background:#0A2540; color:#F2C94C; border:none; padding:14px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-top:12px; }
+  .btn:hover { background:#185FA5; }
+  .btn:disabled { background:#ADB5BD; color:#fff; cursor:not-allowed; }
+  .status { border-radius:8px; padding:12px 16px; font-size:13px; margin-top:16px; display:none; }
+  .status.ok { background:#D1FAE5; color:#065F46; border:1px solid #6EE7B7; }
+  .status.err { background:#FEE2E2; color:#991B1B; border:1px solid #FCA5A5; }
+  .status.loading { background:#EFF6FF; color:#1E40AF; border:1px solid #93C5FD; }
+  .progress { margin-top:8px; font-size:12px; color:#1E40AF; }
+  .spinner { display:inline-block; width:14px; height:14px; border:2px solid #93C5FD; border-top-color:#1E40AF; border-radius:50%; animation:spin .8s linear infinite; margin-right:6px; vertical-align:middle; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .file-info { background:#F8F9FA; border-radius:8px; padding:10px 14px; font-size:12px; color:#495057; margin-bottom:12px; display:none; }
+  .token-section { margin-top:20px; border-top:1px solid #E9ECEF; padding-top:20px; }
+  .token-section label { font-size:12px; font-weight:600; color:#495057; display:block; margin-bottom:6px; }
+  .token-input { width:100%; padding:8px 12px; border:1px solid #DEE2E6; border-radius:8px; font-size:13px; font-family:monospace; outline:none; }
+  .token-input:focus { border-color:#0A2540; }
+  small { font-size:11px; color:#ADB5BD; display:block; margin-top:4px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div style="font-size:36px">🌐</div>
+    <h1>Global Connect 2026</h1>
+    <p>Panel de actualización — Solo administradores</p>
+  </div>
+
+  <div class="token-section">
+    <label>GitHub Token (Personal Access Token)</label>
+    <input type="password" class="token-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <small>Necesario para publicar los datos. Se guarda solo en esta sesión.</small>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="drop-zone" id="dropzone"
+      ondragover="event.preventDefault();this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('fileInput').click()">
+      <div class="icon">📊</div>
+      <h3>Subir Excel del día</h3>
+      <p>Arrastrá el archivo acá o hacé clic para seleccionarlo</p>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="handleFile(this.files[0])">
+    </div>
+    <div class="file-info" id="file-info"></div>
+    <button class="btn" id="publishBtn" disabled onclick="publicar()">📤 Procesar y publicar</button>
+  </div>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+const REPO_OWNER = 'mruizaguirre';
+const REPO_NAME  = 'globalconnect-edn';
+const FILE_PATH  = 'data.json';
+
+let parsedData = null;
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.remove('drag');
+  handleFile(e.dataTransfer.files[0]);
+}
+
+function handleFile(file) {
+  if (!file) return;
+  const match = file.name.match(/(\d{2}-\d{2})/);
+  let fechaLegible = new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+  if (match) {
+    const [d,m] = match[1].split('-');
+    const meses = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    fechaLegible = `${parseInt(d)} de ${meses[parseInt(m)]} de 2026`;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+      const resumen = parseResumenTotal(wb);
+      const modulo  = parseResumenModulo(wb);
+      const dormis  = parseDormis(wb);
+      parsedData = { resumen, modulo, dormis, fecha: fechaLegible };
+
+      document.getElementById('file-info').style.display = 'block';
+      document.getElementById('file-info').innerHTML =
+        `✅ <strong>${file.name}</strong> procesado · ${resumen.alumnosUnicos} alumnos únicos · ${Object.keys(modulo).length} cursos`;
+      document.getElementById('publishBtn').disabled = false;
+      showStatus('Archivo listo. Hacé clic en "Procesar y publicar" para actualizar el dashboard.', 'ok');
+    } catch(err) {
+      showStatus('❌ Error: ' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── PARSER RESUMEN TOTAL ──────────────────────────────────
+// Estructura exacta del Excel:
+// Fila 3 (idx 2): cols G,H,I = "Alumnos Unicos", "1 Curso", "2 Cursos"  (idx 6,7,8)
+// Fila 4 (idx 3): cols G,H,I = 183, 54, 129
+// Fila 4 col B (idx 1) = "Módulo A"
+// Filas 5-8: col B=número, col C=nombre curso, col D=n inscriptos
+// Fila 18: col C="TOTAL GENERAL", col D=314
+// Filas 10+: col G=carrera, H=total, I=1curso, J=2cursos, K=pct
+function parseResumenTotal(wb) {
+  const sn = wb.SheetNames.find(n => n.toLowerCase().includes('resumen total'));
+  if (!sn) throw new Error('No encontré la pestaña "Resumen Total"');
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:''});
+
+  let alumnosUnicos=0, unCurso=0, dosCursos=0, totalGeneral=0;
+  let cursosA=[], cursosB=[], carreras=[];
+  let modulo=null, headerKpiFound=false;
+
+  for (let i=0; i<rows.length; i++) {
+    const cells = rows[i].map(v => String(v ?? '').trim());
+
+    // Fila de HEADER KPIs: contiene "Alumnos Unicos" en col G (idx 6)
+    if (/alumnos.{0,15}[uú]nicos/i.test(cells[6])) {
+      headerKpiFound = true;
+      // Los valores están en la FILA SIGUIENTE
+      if (i+1 < rows.length) {
+        const next = rows[i+1].map(v => String(v ?? '').trim());
+        alumnosUnicos = parseInt(next[6]) || 0;
+        unCurso       = parseInt(next[7]) || 0;
+        dosCursos     = parseInt(next[8]) || 0;
+      }
+      continue;
+    }
+
+    // Módulo A / B en col B (idx 1)
+    if (/^m[oó]dulo\s*a$/i.test(cells[1])) { modulo='A'; continue; }
+    if (/^m[oó]dulo\s*b$/i.test(cells[1])) { modulo='B'; continue; }
+
+    // Total general en col C (idx 2)
+    if (/total\s+general/i.test(cells[2])) {
+      totalGeneral = parseInt(cells[3]) || 0;
+      continue;
+    }
+
+    // Cursos: col B = número 1-4, col C = nombre, col D = inscriptos
+    if (modulo && /^[1-4]$/.test(cells[1]) && cells[2] && cells[2].length>4
+        && !/(subtotal|total)/i.test(cells[2])) {
+      const nombre = cells[2];
+      const n = parseInt(cells[3]) || 0;
+      if (n>0) {
+        if (modulo==='A') cursosA.push({nombre, n});
+        else              cursosB.push({nombre, n});
+      }
+      continue;
+    }
+
+  }
+
+  // Carreras: segunda pasada desde la fila "Carrera" en col G
+  let carreraHeaderRow = -1;
+  for (let i=0; i<rows.length; i++) {
+    if (String(rows[i][6]??'').trim().toLowerCase() === 'carrera') { carreraHeaderRow=i; break; }
+  }
+  if (carreraHeaderRow >= 0) {
+    for (let i=carreraHeaderRow+1; i<rows.length; i++) {
+      const r=rows[i];
+      const nombre=String(r[6]??'').trim();
+      const total=parseInt(r[7])||0;
+      const one=parseInt(r[8])||0;
+      const two=parseInt(r[9])||0;
+      const pct=parseFloat(r[10])||0;
+      if (nombre && total>0) carreras.push({carrera:nombre, total, one, two, pct});
+    }
+  }
+
+  // Dedup y ordenar carreras
+  const seen=new Set();
+  carreras = carreras
+    .filter(c=>{ if(seen.has(c.carrera))return false; seen.add(c.carrera);return true; })
+    .sort((a,b)=>b.total-a.total);
+
+  return {alumnosUnicos, unCurso, dosCursos, totalGeneral, cursosA, cursosB, carreras};
+}
+
+// ── PARSER RESUMEN POR MÓDULO ─────────────────────────────
+function parseResumenModulo(wb) {
+  const sn = wb.SheetNames.find(n => /m[oó]dulo|por m/i.test(n));
+  if (!sn) return {};
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:''});
+
+  const cursos={};
+  let cursoActual=null, moduloActual=null;
+
+  for (const row of rows) {
+    const cells = row.map(v=>String(v).trim());
+    const first = cells[0];
+    const txt   = cells.join(' ');
+
+    if (!txt.trim()) continue;
+
+    // Detectar módulo
+    if (/^m[oó]dulo\s*a$/i.test(first)) { moduloActual='A'; continue; }
+    if (/^m[oó]dulo\s*b$/i.test(first)) { moduloActual='B'; continue; }
+
+    // Encabezado de curso: contiene " | " o "–|" con Prof.
+    if (/\|/.test(txt) && !/prioridad/i.test(first)) {
+      const parts = first.split(/\s*[\|–]\s*/);
+      const nombre = parts[0].trim();
+      const profPart = cells.find(c=>/prof\./i.test(c)) || '';
+      const profesor = profPart.replace(/.*prof\.\s*/i,'').trim();
+      cursoActual = nombre;
+      if (!cursos[cursoActual]) cursos[cursoActual]={modulo:moduloActual, profesor, alumnos:[]};
+      continue;
+    }
+
+    // Alumno: primera celda es "1° Prioridad"
+    if (/^1[°º]?\s*prioridad/i.test(first) && cursoActual) {
+      // cols: [prioridad, apellido, nombre, email, carrera]
+      cursos[cursoActual].alumnos.push({
+        apellido: cells[1]||'',
+        nombre:   cells[2]||'',
+        email:    cells[3]||'',
+        carrera:  cells[4]||''
+      });
+    }
+  }
+  return cursos;
+}
+
+
+// ── PARSER DORMIS ─────────────────────────────────────────
+function parseDormis(wb) {
+  // Pestaña 1: Resumen Dormis
+  const snRes = wb.SheetNames.find(n => /resumen dormis/i.test(n));
+  // Pestaña 2: Resumen con nombres
+  const snNom = wb.SheetNames.find(n => /con nombres/i.test(n));
+  if (!snRes && !snNom) return null;
+
+  let bloques = [], carreras = [], alumnos = [];
+  let baseSimple=0, baseDoble=0, totalReservas=0, totalAlumnos=0;
+
+  // --- Parsear Resumen Dormis ---
+  if (snRes) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[snRes], {header:1, defval:''});
+    let headerFound = false;
+    for (const row of rows) {
+      const c = row.map(v => String(v ?? '').trim());
+      // Header de tabla: col A = "Bloque"
+      if (/^bloque$/i.test(c[0])) { headerFound = true; continue; }
+      // Fila TOTAL
+      if (/^total$/i.test(c[0]) && headerFound) {
+        baseSimple    = parseInt(c[1]) || 0;
+        baseDoble     = parseInt(c[2]) || 0;
+        totalReservas = parseInt(c[3]) || 0;
+        totalAlumnos  = parseInt(c[4]) || 0;
+        continue;
+      }
+      // Filas de bloques
+      if (headerFound && c[0] && c[0].length > 3 && !/^total$/i.test(c[0])) {
+        bloques.push({
+          bloque:  c[0],
+          simple:  parseInt(c[1]) || 0,
+          doble:   parseInt(c[2]) || 0,
+          reservas:parseInt(c[3]) || 0,
+          alumnos: parseInt(c[4]) || 0,
+        });
+      }
+      // Carreras: col H (idx 7) = carrera, I = cant, J = pct
+      if (c[7] && c[7].length > 3 && !/^(carrera|global|total)/i.test(c[7])) {
+        const cant = parseInt(c[8]) || 0;
+        const pct  = parseFloat(c[9]) || 0;
+        if (cant > 0) carreras.push({ carrera: c[7], cant, pct: Math.round(pct) });
+      }
+    }
+  }
+
+  // --- Parsear Resumen con nombres ---
+  if (snNom) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[snNom], {header:1, defval:''});
+    let headerFound = false;
+    for (const row of rows) {
+      const c = row.map(v => String(v ?? '').replace(/\n/g,' ').trim());
+      if (/^apellido/i.test(c[0])) { headerFound = true; continue; }
+      if (!headerFound) continue;
+      if (!c[0] || /^total/i.test(c[0])) continue;
+      alumnos.push({
+        nombre:       c[0],
+        email:        c[1],
+        bloque:       c[2],
+        tipo:         c[3],
+        acompanante:  c[4],
+        observaciones:c[5],
+        carrera:      c[6]
+      });
+    }
+  }
+
+  return { baseSimple, baseDoble, totalReservas, totalAlumnos, bloques, carreras, alumnos };
+}
+
+// ── PUBLICAR EN GITHUB ────────────────────────────────────
+async function publicar() {
+  const token = document.getElementById('ghToken').value.trim();
+  if (!token) { showStatus('⚠️ Ingresá tu GitHub Token primero.', 'err'); return; }
+  if (!parsedData) { showStatus('⚠️ Primero subí el Excel.', 'err'); return; }
+
+  document.getElementById('publishBtn').disabled = true;
+  showStatus('<span class="spinner"></span> Publicando en GitHub...', 'loading');
+
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(parsedData, null, 2))));
+    const apiUrl  = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+    // Obtener SHA del archivo existente (si existe)
+    let sha = null;
+    try {
+      const r = await fetch(apiUrl, {headers:{Authorization:`token ${token}`}});
+      if (r.ok) { const d=await r.json(); sha=d.sha; }
+    } catch(_){}
+
+    const body = {
+      message: `Actualización datos ${parsedData.fecha}`,
+      content,
+      ...(sha ? {sha} : {})
+    };
+
+    const res = await fetch(apiUrl, {
+      method:'PUT',
+      headers:{'Authorization':`token ${token}`,'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || res.statusText);
+    }
+
+    showStatus(`✅ Dashboard actualizado con datos del <strong>${parsedData.fecha}</strong>.<br>
+      Los cambios estarán visibles en 1-2 minutos en:<br>
+      <a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/" target="_blank" style="color:#065F46">
+      https://${REPO_OWNER}.github.io/${REPO_NAME}/</a>`, 'ok');
+    document.getElementById('publishBtn').disabled = false;
+
+  } catch(err) {
+    showStatus('❌ Error al publicar: ' + err.message, 'err');
+    document.getElementById('publishBtn').disabled = false;
+  }
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.className = 'status ' + type;
+  el.innerHTML = msg;
+  el.style.display = 'block';
+}
+</script>
+</body>
+</html>
