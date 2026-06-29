@@ -1,9 +1,9 @@
 {
   "resumen": {
-    "alumnosUnicos": 229,
-    "unCurso": 70,
-    "dosCursos": 159,
-    "totalGeneral": 386,
+    "alumnosUnicos": 231,
+    "unCurso": 71,
+    "dosCursos": 160,
+    "totalGeneral": 388,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -11,7 +11,7 @@
       },
       {
         "nombre": "Impact Investing",
-        "n": 35
+        "n": 36
       },
       {
         "nombre": "Geopolítica y Estrategia",
@@ -19,7 +19,7 @@
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
-        "n": 60
+        "n": 59
       }
     ],
     "cursosB": [
@@ -29,7 +29,7 @@
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 38
+        "n": 39
       },
       {
         "nombre": "Neurociencias y Liderazgo",
@@ -37,7 +37,7 @@
       },
       {
         "nombre": "Decisiones y Crecimiento",
-        "n": 48
+        "n": 49
       }
     ],
     "carreras": [
@@ -50,10 +50,10 @@
       },
       {
         "carrera": "Master in Management",
-        "total": 38,
-        "one": 12,
+        "total": 39,
+        "one": 13,
         "two": 26,
-        "pct": 68
+        "pct": 67
       },
       {
         "carrera": "Maestría en Negocios Tecnológicos",
@@ -99,10 +99,10 @@
       },
       {
         "carrera": "Maestría en Gestión y Dirección de Recursos Humanos",
-        "total": 10,
+        "total": 11,
         "one": 5,
-        "two": 5,
-        "pct": 50
+        "two": 6,
+        "pct": 55
       },
       {
         "carrera": "Maestría en Marketing y Comunicación",
@@ -708,6 +708,12 @@
           "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
         },
         {
+          "apellido": "Mangiarua",
+          "nombre": "Matías",
+          "email": "mmangiarua@udesa.edu.ar",
+          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos"
+        },
+        {
           "apellido": "Marin",
           "nombre": "Maria Celeste",
           "email": "mmarin@udesa.edu.ar",
@@ -768,8 +774,8 @@
           "carrera": "Maestría en Administración de Negocios"
         },
         {
-          "apellido": "VALLES CORTEZ",
-          "nombre": "GASTON IVAN",
+          "apellido": "Valles Cortez",
+          "nombre": "Gastón Iván",
           "email": "gvallescortez@udesa.edu.ar",
           "carrera": "Master in Management"
         },
@@ -987,12 +993,6 @@
           "apellido": "Ameneiros Achard",
           "nombre": "María Cecilia",
           "email": "mameneirosachard@udesa.edu.ar",
-          "carrera": "Master in Management"
-        },
-        {
-          "apellido": "Araudo",
-          "nombre": "Pilar",
-          "email": "Paraudo@udesa.edu.ar",
           "carrera": "Master in Management"
         },
         {
@@ -1716,6 +1716,12 @@
           "carrera": "Maestría en Gestión y Dirección de Recursos Humanos"
         },
         {
+          "apellido": "Marconi",
+          "nombre": "Pedro",
+          "email": "Pmarconi@udesa.edu.ar",
+          "carrera": "Master in Management"
+        },
+        {
           "apellido": "Murphy",
           "nombre": "Santiago Elias",
           "email": "smurphy@udesa.edu.ar",
@@ -2376,6 +2382,12 @@
           "carrera": "Maestria en Finanzas (Modalidad a distancia)"
         },
         {
+          "apellido": "Mangiarua",
+          "nombre": "Matías",
+          "email": "mmangiarua@udesa.edu.ar",
+          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos"
+        },
+        {
           "apellido": "Marin",
           "nombre": "Maria Celeste",
           "email": "mmarin@udesa.edu.ar",
@@ -2825,5 +2837,5 @@
       }
     ]
   },
-  "fecha": "26 de junio de 2026"
+  "fecha": "29 de junio de 2026"
 }
