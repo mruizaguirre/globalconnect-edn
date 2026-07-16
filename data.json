@@ -2031,10 +2031,10 @@
     }
   },
   "dormis": {
-    "baseSimple": 17,
+    "baseSimple": 18,
     "baseDoble": 6,
-    "totalReservas": 23,
-    "totalAlumnos": 29,
+    "totalReservas": 24,
+    "totalAlumnos": 30,
     "bloques": [
       {
         "bloque": "Bloque 1  (19-22/7)",
@@ -2052,17 +2052,17 @@
       },
       {
         "bloque": "Ambos bloques  (19-25/7)",
-        "simple": 11,
+        "simple": 12,
         "doble": 3,
-        "reservas": 14,
-        "alumnos": 17
+        "reservas": 15,
+        "alumnos": 18
       }
     ],
     "carreras": [
       {
         "carrera": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO",
         "cant": 10,
-        "pct": 34
+        "pct": 33
       },
       {
         "carrera": "Maestría en Finanzas (Modalidad a distancia)",
@@ -2318,6 +2318,14 @@
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
       },
       {
+        "nombre": "Vicco Rafael Ricardo",
+        "email": "rafaelvicco@gmail.com",
+        "bloque": "Bloques 1 y 2  (19-25/7)",
+        "tipo": "Base Simple",
+        "acompanante": "",
+        "observaciones": "Graduado"
+      },
+      {
         "nombre": "Villalba Guilazú Nicolás",
         "email": "nvillalbaguinazu@udesa.edu.ar",
         "bloque": "Bloques 1 y 2  (19-25/7)",
@@ -2334,10 +2342,10 @@
         "observaciones": "Maestría en Administración de Negocios (Modalidad a distancia) - MBAO"
       },
       {
-        "nombre": "Total: 29 personas",
+        "nombre": "Total: 30 personas",
         "email": "",
         "bloque": "",
-        "tipo": "Simple: 17",
+        "tipo": "Simple: 18",
         "acompanante": "Doble: 12",
         "observaciones": ""
       }
