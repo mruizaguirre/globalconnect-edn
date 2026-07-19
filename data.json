@@ -15,7 +15,7 @@
       },
       {
         "nombre": "Geopolítica y Estrategia",
-        "n": 22
+        "n": 23
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
@@ -29,7 +29,7 @@
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 33
+        "n": 32
       },
       {
         "nombre": "Neurociencias y Liderazgo",
@@ -690,6 +690,12 @@
           "carrera": "Maestría en Marketing y Comunicación (Modalidad a distancia)"
         },
         {
+          "apellido": "Knorre",
+          "nombre": "Lucía",
+          "email": "lknorre@udesa.edu.ar",
+          "carrera": "Maestría en Finanzas"
+        },
+        {
           "apellido": "Luna",
           "nombre": "Maximiliano",
           "email": "lunam@udesa.edu.ar",
@@ -1312,12 +1318,6 @@
           "nombre": "Victoria",
           "email": "vgarriga@udesa.edu.ar",
           "carrera": "Maestría en Negocios Digitales"
-        },
-        {
-          "apellido": "Griffin",
-          "nombre": "Santiago",
-          "email": "sgriffin@udesa.edu.ar",
-          "carrera": "Maestría en Finanzas"
         },
         {
           "apellido": "Iranzi",
