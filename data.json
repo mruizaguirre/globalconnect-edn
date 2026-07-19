@@ -1,9 +1,9 @@
 {
   "resumen": {
-    "alumnosUnicos": 180,
+    "alumnosUnicos": 178,
     "unCurso": 70,
-    "dosCursos": 110,
-    "totalGeneral": 290,
+    "dosCursos": 108,
+    "totalGeneral": 286,
     "cursosA": [
       {
         "nombre": "IA Generativa e Innovación",
@@ -11,11 +11,11 @@
       },
       {
         "nombre": "Impact Investing",
-        "n": 30
+        "n": 29
       },
       {
         "nombre": "Geopolítica y Estrategia",
-        "n": 23
+        "n": 22
       },
       {
         "nombre": "Implementación, Estrategia e Incertidumbre",
@@ -29,11 +29,11 @@
       },
       {
         "nombre": "Problemas Malditos e Innovación",
-        "n": 34
+        "n": 33
       },
       {
         "nombre": "Neurociencias y Liderazgo",
-        "n": 53
+        "n": 52
       },
       {
         "nombre": "Decisiones y Crecimiento",
@@ -71,10 +71,10 @@
       },
       {
         "carrera": "Maestria en Finanzas (Modalidad a distancia)",
-        "total": 13,
+        "total": 12,
         "one": 3,
-        "two": 10,
-        "pct": 77
+        "two": 9,
+        "pct": 75
       },
       {
         "carrera": "Maestría en Negocios Digitales",
@@ -127,10 +127,10 @@
       },
       {
         "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)",
-        "total": 7,
+        "total": 6,
         "one": 1,
-        "two": 6,
-        "pct": 86
+        "two": 5,
+        "pct": 83
       },
       {
         "carrera": "Externo",
@@ -546,12 +546,6 @@
           "carrera": "Maestría en Finanzas"
         },
         {
-          "apellido": "Gonzalez",
-          "nombre": "Selva",
-          "email": "selvagonzalez@udesa.edu.ar",
-          "carrera": "Maestría en Finanzas (Modalidad a distancia)"
-        },
-        {
           "apellido": "Gourdy Allende",
           "nombre": "Alberto Agustin",
           "email": "Albertogourdy@gmail.com",
@@ -700,12 +694,6 @@
           "nombre": "Maximiliano",
           "email": "lunam@udesa.edu.ar",
           "carrera": "Maestría en Finanzas (Modalidad a distancia)"
-        },
-        {
-          "apellido": "Maldonado",
-          "nombre": "Malena",
-          "email": "malenamaldonado@udesa.edu.ar",
-          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)"
         },
         {
           "apellido": "Marso",
@@ -1326,12 +1314,6 @@
           "carrera": "Maestría en Negocios Digitales"
         },
         {
-          "apellido": "Gonzalez",
-          "nombre": "Selva",
-          "email": "selvagonzalez@udesa.edu.ar",
-          "carrera": "Maestría en Finanzas (Modalidad a distancia)"
-        },
-        {
           "apellido": "Griffin",
           "nombre": "Santiago",
           "email": "sgriffin@udesa.edu.ar",
@@ -1630,12 +1612,6 @@
           "nombre": "Romina Giselle",
           "email": "rideses@udesa.edu.ar",
           "carrera": "Maestría en Negocios Tecnológicos"
-        },
-        {
-          "apellido": "Maldonado",
-          "nombre": "Malena",
-          "email": "malenamaldonado@udesa.edu.ar",
-          "carrera": "Maestría en Gestión y Dirección de Recursos Humanos (Modalidad a distancia)"
         },
         {
           "apellido": "Maldonado Rodriguez",
@@ -2273,5 +2249,5 @@
       }
     ]
   },
-  "fecha": "18 de julio de 2026"
+  "fecha": "19 de julio de 2026"
 }
